@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ISSS608-VAAGroup5 - About</title>
+<title>ISSS608-VAAGroup5 - Project Proposal</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -119,7 +85,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./proposal.html" rel="" target="">
+    <a class="nav-link active" href="./proposal.html" rel="" target="" aria-current="page">
  <span class="menu-text">Project Proposal</span></a>
   </li>  
 </ul>
@@ -134,14 +100,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#background-motivation" id="toc-background-motivation" class="nav-link" data-scroll-target="#background-motivation">Background &amp; Motivation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">Project Proposal</h1>
 </div>
 
 
@@ -156,15 +129,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>About this site</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Fish and other seafood provides nutrients for more than three billion people globally and is an income source for 10%-12% of the world’s population (The Nature Conservancy, 2021). Food and Agriculture Organization of the United Nations (FAO) reports that Illegal, Unreported, and Unregulated (IUU) fishing represents up to 26 million tonnes of fish caught annually (FAO, 2023). IUU remains one of the greatest global threats as it results in overfishing, which threatens marine biodiversity, livelihoods, aggravates poverty, and increases food insecurity (IMO, 2019). Given the global impact that IUU causes, there has been international efforts to account for IUU fishing and a call-to-action to fight IUU. As part of the efforts, Agreement on Port State Measures (PSMA) was instituted in Jun 2016, which is the first binding international agreement specifically designed to prevent, deter and eliminate IUU fishing by denying port access and use to foreign vessels engaging in or supporting such fishing (FAO, 2023). By 2022, 60% of global port states are committed to PSMA (Responsible Seafood Advocate, 2022). Given the global participation, data points have been made available through Global Information Exchange System (GIES) which can be leveraged on to produce data-driven analysis for trend indicators of IUU and gaps identified to tighten IUU measures. Currently, there exists a IUU Fishing Index that provides a measure of the degree to which states are exposed to and effectively combat IUU fishing. The score map allows for oversight on the state-of-health for each region (IUU Fishing Index, 2023).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://iuufishingindex.net/about"><img src="images/Score Map.PNG" class="img-fluid figure-img"></a></p>
+<p></p><figcaption class="figure-caption">Score Maps</figcaption><p></p>
+</figure>
 </div>
-</div>
+</section>
+<section id="background-motivation" class="level1">
+<h1>Background &amp; Motivation</h1>
+<p>This project is motivated by the pressing need to address illegal fishing and protect marine species affected by it. The extraction of entity names and relationships from online news articles related to fishing, marine industry, and international maritime trade using a natural language processing tool provides valuable information for investigation. However, effectively exploring and understanding the context surrounding each tip is challenging without overwhelming analysts with excessive information. Therefore, the motivation is to develop visual analytics techniques that enable analysts to efficiently identify companies potentially involved in illegal fishing. The proposed solution should prioritize displaying relevant contextual information while concealing irrelevant details, while also promoting dynamic and interactive visualization for improved investigative capabilities. By providing a powerful visual tool, this project aims to empower analysts in escalating their investigations and effectively combating illegal fishing practices.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

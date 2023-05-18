@@ -5,13 +5,14 @@ website:
   title: "ISSS608-VAAGroup5"
   navbar:
     left:
-      - href: index.qmd
+      - href: home.qmd
         text: Home
-      - about.qmd
+      - href: proposal.qmd
+        text: "Project Proposal"
 
 format:
   html:
-    theme: cosmo
+    theme: sandstone
     css: styles.css
     toc: true
 
