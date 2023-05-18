@@ -1,0 +1,10 @@
+---
+title: "Welcome to Group 5's project page."
+---
+
+[![Posted by: manishsiq](images/IUU-Fishing.jpg)](https://www.studyiq.com/articles/iuu-fishing/)
+
+## **Project Title: What The Fish Does This Mean?**
+
+The fight against illegal, unreported and unregulated (IUU) has come a long way with global support and efforts. With global partnerships and technology advancements, we can now leverage on data and technological capabilities to monitor sea activities. For example, AI-powered electronic monitoring systems that enables observer programs to increase coverage. Satellite-based data analyzed through machine learning can show vessel movements. Finally, databases have enabled detailed inspection of vessels' history, including changes in names and their ownership. A combination of all these data paints a robust illustration on vessel activity and identity.\
+In our project we aim to value-add to these efforts by contextualizing and providing visualization insights through dynamic displays and identification of suspicious patterns that may warrant further investigations.
