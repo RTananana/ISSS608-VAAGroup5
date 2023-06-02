@@ -102,6 +102,14 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#background-motivation" id="toc-background-motivation" class="nav-link" data-scroll-target="#background-motivation">Background &amp; Motivation</a></li>
+  <li><a href="#data-description-abhi" id="toc-data-description-abhi" class="nav-link" data-scroll-target="#data-description-abhi">Data Description (Abhi)</a></li>
+  <li><a href="#analytical-methodology" id="toc-analytical-methodology" class="nav-link" data-scroll-target="#analytical-methodology">Analytical Methodology</a>
+  <ul class="collapse">
+  <li><a href="#packages-to-be-used" id="toc-packages-to-be-used" class="nav-link" data-scroll-target="#packages-to-be-used">Packages to be used?</a></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</a></li>
+  <li><a href="#network-graph" id="toc-network-graph" class="nav-link" data-scroll-target="#network-graph">Network Graph</a></li>
+  <li><a href="#predictive-modelling-random-forest" id="toc-predictive-modelling-random-forest" class="nav-link" data-scroll-target="#predictive-modelling-random-forest">Predictive Modelling (Random Forest)</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -138,8 +146,35 @@ ul.task-list li input[type="checkbox"] {
 <section id="background-motivation" class="level1">
 <h1>Background &amp; Motivation</h1>
 <p>This project is motivated by the pressing need to address illegal fishing and protect marine species affected by it. The extraction of entity names and relationships from online news articles related to fishing, marine industry, and international maritime trade using a natural language processing tool provides valuable information for investigation. However, effectively exploring and understanding the context surrounding each tip is challenging without overwhelming analysts with excessive information. Therefore, the motivation is to develop visual analytics techniques that enable analysts to efficiently identify companies potentially involved in illegal fishing. The proposed solution should prioritize displaying relevant contextual information while concealing irrelevant details, while also promoting dynamic and interactive visualization for improved investigative capabilities. By providing a powerful visual tool, this project aims to empower analysts in escalating their investigations and effectively combating illegal fishing practices.</p>
+</section>
+<section id="data-description-abhi" class="level1">
+<h1>Data Description (Abhi)</h1>
+</section>
+<section id="analytical-methodology" class="level1">
+<h1>Analytical Methodology</h1>
+<section id="packages-to-be-used" class="level2">
+<h2 class="anchored" data-anchor-id="packages-to-be-used">Packages to be used?</h2>
+</section>
+<section id="exploratory-data-analysis-eda" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</h2>
+<p>EDA is a crucial step in understanding the dataset by utilizing data visualization techniques. It serves to identify any issues or anomalies within the data and uncover valuable insights about the relationships between variables and underlying patterns present in the dataset. By employing a combination of univariate, bivariate, and multivariate visualizations, as well as summary statistics, a comprehensive understanding of the dataset can be gained.</p>
+<p>EDA also plays a significant role in examining the distribution of existing entities within the dataset. By analyzing the type and country data, it becomes possible to discern and comprehend the distinct patterns exhibited by suspicious entities compared to those categorized as non-suspicious.</p>
+<p>Through EDA, the team hope to uncover potential data quality issues, detect outliers, identify missing values, and verify the consistency of the dataset. Furthermore, it enables the exploration of correlations, trends, and dependencies between variables, shedding light on hidden insights that might inform further analysis or investigative efforts.</p>
+<p>By conducting a thorough EDA, the team can gain a holistic understanding of the dataset, discover meaningful patterns, and generate valuable knowledge that aids decision-making and subsequent analysis tasks.</p>
+</section>
+<section id="network-graph" class="level2">
+<h2 class="anchored" data-anchor-id="network-graph">Network Graph</h2>
+<p>Network graphs, along with centrality measures, provide a powerful tool for identifying potential illegal fishing activities. By constructing a network graph based on relationships and interactions among entities involved in fishing and maritime trade, we can analyze the centrality measures of these entities. Centrality measures, such as degree centrality, betweenness centrality, and eigenvector centrality, allow us to assess the relative importance and influence of each entity within the network. In the context of illegal fishing, entities with high centrality scores may indicate key players or hubs that are potentially involved in illegal activities. By focusing on these influential entities and their connections, we can uncover hidden patterns, detect suspicious relationships, and identify clusters of entities that exhibit abnormal behavior. Network graph analysis, combined with centrality measures, provides a valuable approach to pinpoint potential illegal fishing activities and target further investigation and intervention efforts effectively.</p>
+</section>
+<section id="predictive-modelling-random-forest" class="level2">
+<h2 class="anchored" data-anchor-id="predictive-modelling-random-forest">Predictive Modelling (Random Forest)</h2>
+<p>Random Forest, a machine learning algorithm, is an effective tool for identifying entities involved in illegal fishing activities. By utilizing its classification capabilities, Random Forest can analyze relevant contextual features to distinguish between legal and illegal fishing entities. The algorithm’s ability to handle imbalanced data is particularly valuable in this context, as the number of illegal fishing instances is often significantly smaller than legal fishing activities.</p>
+<p>During training, Random Forest employs a randomized selection process, where subsets of the data and features are chosen to construct multiple decision trees. By considering various contextual factors, such as, fishing locations, trade records and partners, and regulatory compliance, the algorithm can capture the distinguishing patterns and relationships that signify potential involvement in illegal fishing practices.</p>
+<p>Through the collective decision-making of the ensemble of trees, Random Forest generates predictions for each entity, considering the contextual features. The final determination of whether an entity is likely engaged in illegal fishing is based on the majority vote or average prediction across the decision trees.</p>
+<p>The strength of Random Forest lies in its ability to leverage the collective knowledge embedded within the contextual features to identify entities associated with illegal fishing. Its robustness to imbalanced data, coupled with the power of its ensemble approach, makes it a valuable tool in addressing the challenges of detecting and combating illegal fishing activities.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
