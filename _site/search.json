@@ -17,8 +17,8 @@
     "objectID": "proposal.html#packages-to-be-used",
     "href": "proposal.html#packages-to-be-used",
     "title": "Project Proposal",
-    "section": "4.1 Packages to be used?",
-    "text": "4.1 Packages to be used?"
+    "section": "4.1 Packages to be used",
+    "text": "4.1 Packages to be used\n\n\n\n\n\n\n\nPackage\nUsage\n\n\n\n\njsonlite\nTo import nodes and edges data from json format files\n\n\ntidygraph\nAllow users to manipulate and analyze network graphs using a tidy data framework.\n\n\nggraph\nProvides various options for creating aesthetically pleasing and informative network visualizations\n\n\nvisNetwork\nEnabling the creation of interactive network graphs, provides features like zooming, panning, and tooltips for enhanced exploration of the graph\n\n\ngraphlayouts\nProvides various layout algorithms for arranging nodes and edges in a network graph, offers different algorithms such as Fruchterman-Reingold, Kamada-Kawai, and more\n\n\nggforce\nExtends the functionality of ggplot2 and provides additional geoms, scales, and utilities for creating advanced and customized network visualizations\n\n\ntidytext\nUsed for text mining and analysis, allows users to work with text data associated with network nodes or edges\n\n\ntidyverse\nProvides a cohesive and consistent set of tools for data manipulation, visualization, and analysis, which can be utilized in the process of constructing network graphs"
   },
   {
     "objectID": "proposal.html#exploratory-data-analysis-eda",

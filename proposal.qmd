@@ -16,9 +16,21 @@ This project is motivated by the pressing need to address illegal fishing and pr
 
 # 4. Analytical Methodology
 
-## 4.1 Packages to be used?
+## 4.1 Packages to be used
+
+| Package      | Usage                                                                                                                                                                   |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| jsonlite     | To import nodes and edges data from json format files                                                                                                                   |
+| tidygraph    | Allow users to manipulate and analyze network graphs using a tidy data framework.                                                                                       |
+| ggraph       | Provides various options for creating aesthetically pleasing and informative network visualizations                                                                     |
+| visNetwork   | Enabling the creation of interactive network graphs, provides features like zooming, panning, and tooltips for enhanced exploration of the graph                        |
+| graphlayouts | Provides various layout algorithms for arranging nodes and edges in a network graph, offers different algorithms such as Fruchterman-Reingold, Kamada-Kawai, and more   |
+| ggforce      | Extends the functionality of ggplot2 and provides additional geoms, scales, and utilities for creating advanced and customized network visualizations                   |
+| tidytext     | Used for text mining and analysis, allows users to work with text data associated with network nodes or edges                                                           |
+| tidyverse    | Provides a cohesive and consistent set of tools for data manipulation, visualization, and analysis, which can be utilized in the process of constructing network graphs |
 
 ## 4.2 Exploratory Data Analysis (EDA)
+
 EDA is a crucial step in understanding the dataset by utilizing data visualization techniques. It serves to identify any issues or anomalies within the data and uncover valuable insights about the relationships between variables and underlying patterns present in the dataset. By employing a combination of univariate, bivariate, and multivariate visualizations, as well as summary statistics, a comprehensive understanding of the dataset can be gained.
 
 EDA also plays a significant role in examining the distribution of existing entities within the dataset. By analyzing the type and country data, it becomes possible to discern and comprehend the distinct patterns exhibited by suspicious entities compared to those categorized as non-suspicious.
@@ -31,11 +43,10 @@ By conducting a thorough EDA, the team can gain a holistic understanding of the 
 
 Network graphs, along with centrality measures, provide a powerful tool for identifying potential illegal fishing activities. By constructing a network graph based on relationships and interactions among entities involved in fishing and maritime trade, we can analyze the centrality measures of these entities. Centrality measures, such as degree centrality, betweenness centrality, and eigenvector centrality, allow us to assess the relative importance and influence of each entity within the network. In the context of illegal fishing, entities with high centrality scores may indicate key players or hubs that are potentially involved in illegal activities. By focusing on these influential entities and their connections, we can uncover hidden patterns, detect suspicious relationships, and identify clusters of entities that exhibit abnormal behavior. Network graph analysis, combined with centrality measures, provides a valuable approach to pinpoint potential illegal fishing activities and target further investigation and intervention efforts effectively.
 
-## 4.4 Clustering Analysis 
+## 4.4 Clustering Analysis
 
 By leveraging the available data, specifically the source, target, type of business, country, product description, and value of goods, we can employ clustering analysis on the network graph to identify anomalies that could indicate a company's involvement in illegal, unreported, and unregulated (IUU) fishing activities.
 
 Clustering algorithms can be applied to group entities based on their connections and relationships in the network graph. By examining the patterns and groupings that emerge, we can identify clusters of entities that exhibit unusual behavior or deviate from the typical characteristics of legitimate fishing operations. These anomalies may manifest as suspicious trade relationships, atypical product descriptions, unexpected transaction values, or unusual combinations of countries and business types.
 
 The clustering analysis enables us to uncover hidden patterns and structures within the data, allowing us to identify entities that demonstrate suspicious or potentially illegal fishing practices. By pinpointing these anomalies, we can prioritize our investigation efforts and allocate resources effectively to combat IUU fishing. This approach provides a data-driven means of detecting and monitoring potential IUU activities, helping to protect marine ecosystems and enforce regulations in the fishing industry.
-
