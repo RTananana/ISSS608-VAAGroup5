@@ -6,6 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Tan Yu Yan Rachel, Yap Pin Yaw, Abhishek Singh">
+<meta name="dcterms.date" content="2023-05-16">
 
 <title>ISSS608-VAAGroup5 - Project Proposal</title>
 <style>
@@ -102,13 +104,23 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a></li>
   <li><a href="#background-motivation" id="toc-background-motivation" class="nav-link" data-scroll-target="#background-motivation">2. Background &amp; Motivation</a></li>
-  <li><a href="#data-description-abhi" id="toc-data-description-abhi" class="nav-link" data-scroll-target="#data-description-abhi">3. Data Description (Abhi)</a></li>
+  <li><a href="#data-description" id="toc-data-description" class="nav-link" data-scroll-target="#data-description">3. Data Description</a>
+  <ul class="collapse">
+  <li><a href="#nodes-attributes" id="toc-nodes-attributes" class="nav-link" data-scroll-target="#nodes-attributes">3.1 Nodes Attributes</a></li>
+  <li><a href="#edges-attributes" id="toc-edges-attributes" class="nav-link" data-scroll-target="#edges-attributes">3.2 Edges Attributes</a></li>
+  </ul></li>
   <li><a href="#analytical-methodology" id="toc-analytical-methodology" class="nav-link" data-scroll-target="#analytical-methodology">4. Analytical Methodology</a>
   <ul class="collapse">
   <li><a href="#packages-to-be-used" id="toc-packages-to-be-used" class="nav-link" data-scroll-target="#packages-to-be-used">4.1 Packages to be used</a></li>
   <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">4.2 Exploratory Data Analysis (EDA)</a></li>
   <li><a href="#network-graph" id="toc-network-graph" class="nav-link" data-scroll-target="#network-graph">4.3 Network Graph</a></li>
   <li><a href="#clustering-analysis" id="toc-clustering-analysis" class="nav-link" data-scroll-target="#clustering-analysis">4.4 Clustering Analysis</a></li>
+  </ul></li>
+  <li><a href="#storyboard" id="toc-storyboard" class="nav-link" data-scroll-target="#storyboard">5. Storyboard</a>
+  <ul class="collapse">
+  <li><a href="#uncovering-the-anomalies" id="toc-uncovering-the-anomalies" class="nav-link" data-scroll-target="#uncovering-the-anomalies">5.1 Uncovering the Anomalies</a></li>
+  <li><a href="#grouping-commonalities-uncovering-patterns" id="toc-grouping-commonalities-uncovering-patterns" class="nav-link" data-scroll-target="#grouping-commonalities-uncovering-patterns">5.2 Grouping Commonalities &amp; Uncovering Patterns</a></li>
+  <li><a href="#evaluation" id="toc-evaluation" class="nav-link" data-scroll-target="#evaluation">5.3 Evaluation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -125,8 +137,26 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Tan Yu Yan Rachel, Yap Pin Yaw, Abhishek Singh </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 16, 2023</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">Invalid Date</p>
+    </div>
+  </div>
     
   </div>
   
@@ -147,8 +177,103 @@ ul.task-list li input[type="checkbox"] {
 <h1>2. Background &amp; Motivation</h1>
 <p>This project is motivated by the pressing need to address illegal fishing and protect marine species affected by it. The extraction of entity names and relationships from online news articles related to fishing, marine industry, and international maritime trade using a natural language processing tool provides valuable information for investigation. However, effectively exploring and understanding the context surrounding each tip is challenging without overwhelming analysts with excessive information. Therefore, the motivation is to develop visual analytics techniques that enable analysts to efficiently identify companies potentially involved in illegal fishing. The proposed solution should prioritize displaying relevant contextual information while concealing irrelevant details, while also promoting dynamic and interactive visualization for improved investigative capabilities. By providing a powerful visual tool, this project aims to empower analysts in escalating their investigations and effectively combating illegal fishing practices.</p>
 </section>
-<section id="data-description-abhi" class="level1">
-<h1>3. Data Description (Abhi)</h1>
+<section id="data-description" class="level1">
+<h1>3. Data Description</h1>
+<p>The dataset has:</p>
+<ul>
+<li><p>27,622 nodes</p></li>
+<li><p>24,038 edges</p></li>
+<li><p>7,794 connected components</p></li>
+</ul>
+<p>The dataset given is an undirected multi-graph.</p>
+<section id="nodes-attributes" class="level2">
+<h2 class="anchored" data-anchor-id="nodes-attributes">3.1 Nodes Attributes</h2>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>type</td>
+<td>character</td>
+<td>Type of node that is a company or person.</td>
+</tr>
+<tr class="even">
+<td>country</td>
+<td>character</td>
+<td>Country associated with the entity. This can be a full country or a two-letter country code.</td>
+</tr>
+<tr class="odd">
+<td>product_services</td>
+<td>character</td>
+<td>Description of product services that the “id” node does.</td>
+</tr>
+<tr class="even">
+<td>revenue_omu</td>
+<td>integer</td>
+<td>Operating revenue of the “id” node in Oceanus Monetary Units.</td>
+</tr>
+<tr class="odd">
+<td>id</td>
+<td>character</td>
+<td>Identifier of the node is also the name of the entry.</td>
+</tr>
+<tr class="even">
+<td>role</td>
+<td>character</td>
+<td>The subset of the “type” node, includes beneficial owner or company contacts</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="edges-attributes" class="level2">
+<h2 class="anchored" data-anchor-id="edges-attributes">3.2 Edges Attributes</h2>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Column Name</th>
+<th>Data Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>type</td>
+<td>character</td>
+<td>Type of edge that is a person.</td>
+</tr>
+<tr class="even">
+<td>source</td>
+<td>character</td>
+<td>ID of the source node.</td>
+</tr>
+<tr class="odd">
+<td>target</td>
+<td>character</td>
+<td>ID of the target node.</td>
+</tr>
+<tr class="even">
+<td>role</td>
+<td>character</td>
+<td>The subset of the “type” edge, includes beneficial owner or company contacts</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="analytical-methodology" class="level1">
 <h1>4. Analytical Methodology</h1>
@@ -156,8 +281,8 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="packages-to-be-used">4.1 Packages to be used</h2>
 <table class="table">
 <colgroup>
-<col style="width: 7%">
-<col style="width: 92%">
+<col style="width: 25%">
+<col style="width: 75%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -217,6 +342,54 @@ ul.task-list li input[type="checkbox"] {
 <p>By leveraging the available data, specifically the source, target, type of business, country, product description, and value of goods, we can employ clustering analysis on the network graph to identify anomalies that could indicate a company’s involvement in illegal, unreported, and unregulated (IUU) fishing activities.</p>
 <p>Clustering algorithms can be applied to group entities based on their connections and relationships in the network graph. By examining the patterns and groupings that emerge, we can identify clusters of entities that exhibit unusual behavior or deviate from the typical characteristics of legitimate fishing operations. These anomalies may manifest as suspicious trade relationships, atypical product descriptions, unexpected transaction values, or unusual combinations of countries and business types.</p>
 <p>The clustering analysis enables us to uncover hidden patterns and structures within the data, allowing us to identify entities that demonstrate suspicious or potentially illegal fishing practices. By pinpointing these anomalies, we can prioritize our investigation efforts and allocate resources effectively to combat IUU fishing. This approach provides a data-driven means of detecting and monitoring potential IUU activities, helping to protect marine ecosystems and enforce regulations in the fishing industry.</p>
+</section>
+</section>
+<section id="storyboard" class="level1">
+<h1>5. Storyboard</h1>
+<section id="uncovering-the-anomalies" class="level2">
+<h2 class="anchored" data-anchor-id="uncovering-the-anomalies">5.1 Uncovering the Anomalies</h2>
+<p>With EDA, we will be able to have a good overview of the various categories of data, as well and spot any anomaly data through visualizations.</p>
+<p>As our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/barchart example.png" class="img-fluid figure-img" width="346"></p>
+<p></p><figcaption class="figure-caption">Barchart Example [https://ggplot2.tidyverse.org]</figcaption><p></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/heatmap example-01.png" class="img-fluid figure-img" width="346"></p>
+<p></p><figcaption class="figure-caption">Heatmap Example [Alboukadel Kassambara]</figcaption><p></p>
+</figure>
+</div>
+<p>As an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mosiac plot example.png" class="img-fluid figure-img" width="636"></p>
+<p></p><figcaption class="figure-caption">Mosaic Plot Example [Jun 13, 2017 by Achim Zeileis]</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="grouping-commonalities-uncovering-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="grouping-commonalities-uncovering-patterns">5.2 Grouping Commonalities &amp; Uncovering Patterns</h2>
+<p>Next, we will use network graphs to visualize common groups.</p>
+<p>Network analysis will be conducted using the following methods:</p>
+<ol type="1">
+<li>Community detection through the visualization layout of the network graph.</li>
+<li>Node similarity measures using jaccard or cosine similarity to identify companies with common attributes or similar connectivity patterns.</li>
+<li>Centrality measures: to use the appropriate centrality measures to identify companies that are highly connected or influential in the network - which would point out potential IUU hubs.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/Network Example.png" class="img-fluid figure-img" width="570"></p>
+<p></p><figcaption class="figure-caption">Example of Network Communities [June 12, 2019 by Niklas Junker]</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="evaluation">5.3 Evaluation</h2>
+<p>Grouped together with the various analysis of outlier detection and community detection, the conclusion will identify entities that exhibit suspicious behavior or are disconnected from the rest of the network.</p>
+<p>The team will evaluate the evidence presented by the network graph, incorporating external supporting literature reviews to assess the overall credibility and significance of the findings.</p>
 
 
 </section>

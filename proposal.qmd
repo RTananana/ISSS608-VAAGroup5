@@ -1,5 +1,12 @@
 ---
 title: "Project Proposal"
+author: "Tan Yu Yan Rachel, Yap Pin Yaw, Abhishek Singh"
+date: "16 May 2023"
+date-modified: "`r Sys.Date()`"
+execute:
+  echo: true
+  eval: true
+  warning: false
 ---
 
 # 1. Introduction
@@ -12,14 +19,44 @@ Fish and other seafood provides nutrients for more than three billion people glo
 
 This project is motivated by the pressing need to address illegal fishing and protect marine species affected by it. The extraction of entity names and relationships from online news articles related to fishing, marine industry, and international maritime trade using a natural language processing tool provides valuable information for investigation. However, effectively exploring and understanding the context surrounding each tip is challenging without overwhelming analysts with excessive information. Therefore, the motivation is to develop visual analytics techniques that enable analysts to efficiently identify companies potentially involved in illegal fishing. The proposed solution should prioritize displaying relevant contextual information while concealing irrelevant details, while also promoting dynamic and interactive visualization for improved investigative capabilities. By providing a powerful visual tool, this project aims to empower analysts in escalating their investigations and effectively combating illegal fishing practices.
 
-# 3. Data Description (Abhi)
+# 3. Data Description
+
+The dataset has:
+
+-   27,622 nodes
+
+-   24,038 edges
+
+-   7,794 connected components
+
+The dataset given is an undirected multi-graph.
+
+## 3.1 Nodes Attributes
+
+| Column Name      | Data Type | Description                                                                                  |
+|---------------|---------------|------------------------------------------|
+| type             | character | Type of node that is a company or person.                                                    |
+| country          | character | Country associated with the entity. This can be a full country or a two-letter country code. |
+| product_services | character | Description of product services that the "id" node does.                                     |
+| revenue_omu      | integer   | Operating revenue of the "id" node in Oceanus Monetary Units.                                |
+| id               | character | Identifier of the node is also the name of the entry.                                        |
+| role             | character | The subset of the "type" node, includes beneficial owner or company contacts                 |
+
+## 3.2 Edges Attributes
+
+| Column Name | Data Type | Description                                                                  |
+|---------------|---------------|------------------------------------------|
+| type        | character | Type of edge that is a person.                                               |
+| source      | character | ID of the source node.                                                       |
+| target      | character | ID of the target node.                                                       |
+| role        | character | The subset of the "type" edge, includes beneficial owner or company contacts |
 
 # 4. Analytical Methodology
 
 ## 4.1 Packages to be used
 
 | Package      | Usage                                                                                                                                                                   |
-|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|------------------|------------------------------------------------------|
 | jsonlite     | To import nodes and edges data from json format files                                                                                                                   |
 | tidygraph    | Allow users to manipulate and analyze network graphs using a tidy data framework.                                                                                       |
 | ggraph       | Provides various options for creating aesthetically pleasing and informative network visualizations                                                                     |
@@ -50,3 +87,37 @@ By leveraging the available data, specifically the source, target, type of busin
 Clustering algorithms can be applied to group entities based on their connections and relationships in the network graph. By examining the patterns and groupings that emerge, we can identify clusters of entities that exhibit unusual behavior or deviate from the typical characteristics of legitimate fishing operations. These anomalies may manifest as suspicious trade relationships, atypical product descriptions, unexpected transaction values, or unusual combinations of countries and business types.
 
 The clustering analysis enables us to uncover hidden patterns and structures within the data, allowing us to identify entities that demonstrate suspicious or potentially illegal fishing practices. By pinpointing these anomalies, we can prioritize our investigation efforts and allocate resources effectively to combat IUU fishing. This approach provides a data-driven means of detecting and monitoring potential IUU activities, helping to protect marine ecosystems and enforce regulations in the fishing industry.
+
+# 5. Storyboard
+
+## 5.1 Uncovering the Anomalies
+
+With EDA, we will be able to have a good overview of the various categories of data, as well and spot any anomaly data through visualizations.
+
+As our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.
+
+![Barchart Example \[https://ggplot2.tidyverse.org\]](images/barchart%20example.png){fig-align="center" width="346"}
+
+![Heatmap Example \[Alboukadel Kassambara\]](images/heatmap%20example-01.png){fig-align="center" width="346"}
+
+As an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.
+
+![Mosaic Plot Example \[Jun 13, 2017 by Achim Zeileis\]](images/mosiac%20plot%20example.png){fig-align="center" width="636"}
+
+## 5.2 Grouping Commonalities & Uncovering Patterns
+
+Next, we will use network graphs to visualize common groups.
+
+Network analysis will be conducted using the following methods:
+
+1.  Community detection through the visualization layout of the network graph.
+2.  Node similarity measures using jaccard or cosine similarity to identify companies with common attributes or similar connectivity patterns.
+3.  Centrality measures: to use the appropriate centrality measures to identify companies that are highly connected or influential in the network - which would point out potential IUU hubs.
+
+![Example of Network Communities \[June 12, 2019 by Niklas Junker\]](images/Network%20Example.png){fig-align="center" width="570"}
+
+## 5.3 Evaluation
+
+Grouped together with the various analysis of outlier detection and community detection, the conclusion will identify entities that exhibit suspicious behavior or are disconnected from the rest of the network.
+
+The team will evaluate the evidence presented by the network graph, incorporating external supporting literature reviews to assess the overall credibility and significance of the findings.

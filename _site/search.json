@@ -40,5 +40,40 @@
     "title": "Project Proposal",
     "section": "4.4 Clustering Analysis",
     "text": "4.4 Clustering Analysis\nBy leveraging the available data, specifically the source, target, type of business, country, product description, and value of goods, we can employ clustering analysis on the network graph to identify anomalies that could indicate a company’s involvement in illegal, unreported, and unregulated (IUU) fishing activities.\nClustering algorithms can be applied to group entities based on their connections and relationships in the network graph. By examining the patterns and groupings that emerge, we can identify clusters of entities that exhibit unusual behavior or deviate from the typical characteristics of legitimate fishing operations. These anomalies may manifest as suspicious trade relationships, atypical product descriptions, unexpected transaction values, or unusual combinations of countries and business types.\nThe clustering analysis enables us to uncover hidden patterns and structures within the data, allowing us to identify entities that demonstrate suspicious or potentially illegal fishing practices. By pinpointing these anomalies, we can prioritize our investigation efforts and allocate resources effectively to combat IUU fishing. This approach provides a data-driven means of detecting and monitoring potential IUU activities, helping to protect marine ecosystems and enforce regulations in the fishing industry."
+  },
+  {
+    "objectID": "proposal.html#nodes-attributes",
+    "href": "proposal.html#nodes-attributes",
+    "title": "Project Proposal",
+    "section": "3.1 Nodes Attributes",
+    "text": "3.1 Nodes Attributes\n\n\n\n\n\n\n\n\nColumn Name\nData Type\nDescription\n\n\n\n\ntype\ncharacter\nType of node that is a company or person.\n\n\ncountry\ncharacter\nCountry associated with the entity. This can be a full country or a two-letter country code.\n\n\nproduct_services\ncharacter\nDescription of product services that the “id” node does.\n\n\nrevenue_omu\ninteger\nOperating revenue of the “id” node in Oceanus Monetary Units.\n\n\nid\ncharacter\nIdentifier of the node is also the name of the entry.\n\n\nrole\ncharacter\nThe subset of the “type” node, includes beneficial owner or company contacts"
+  },
+  {
+    "objectID": "proposal.html#edges-attributes",
+    "href": "proposal.html#edges-attributes",
+    "title": "Project Proposal",
+    "section": "3.2 Edges Attributes",
+    "text": "3.2 Edges Attributes\n\n\n\n\n\n\n\n\nColumn Name\nData Type\nDescription\n\n\n\n\ntype\ncharacter\nType of edge that is a person.\n\n\nsource\ncharacter\nID of the source node.\n\n\ntarget\ncharacter\nID of the target node.\n\n\nrole\ncharacter\nThe subset of the “type” edge, includes beneficial owner or company contacts"
+  },
+  {
+    "objectID": "proposal.html#uncovering-the-anomalies",
+    "href": "proposal.html#uncovering-the-anomalies",
+    "title": "Project Proposal",
+    "section": "5.1 Uncovering the Anomalies",
+    "text": "5.1 Uncovering the Anomalies\nWith EDA, we will be able to have a good overview of the various categories of data, as well and spot any anomaly data through visualizations.\nAs our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.\n\n\n\nBarchart Example [https://ggplot2.tidyverse.org]\n\n\n\n\n\nHeatmap Example [Alboukadel Kassambara]\n\n\nAs an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.\n\n\n\nMosaic Plot Example [Jun 13, 2017 by Achim Zeileis]"
+  },
+  {
+    "objectID": "proposal.html#grouping-commonalities-uncovering-patterns",
+    "href": "proposal.html#grouping-commonalities-uncovering-patterns",
+    "title": "Project Proposal",
+    "section": "5.2 Grouping Commonalities & Uncovering Patterns",
+    "text": "5.2 Grouping Commonalities & Uncovering Patterns\nNext, we will use network graphs to visualize common groups.\nNetwork analysis will be conducted using the following methods:\n\nCommunity detection through the visualization layout of the network graph.\nNode similarity measures using jaccard or cosine similarity to identify companies with common attributes or similar connectivity patterns.\nCentrality measures: to use the appropriate centrality measures to identify companies that are highly connected or influential in the network - which would point out potential IUU hubs.\n\n\n\n\nExample of Network Communities [June 12, 2019 by Niklas Junker]"
+  },
+  {
+    "objectID": "proposal.html#evaluation",
+    "href": "proposal.html#evaluation",
+    "title": "Project Proposal",
+    "section": "5.3 Evaluation",
+    "text": "5.3 Evaluation\nGrouped together with the various analysis of outlier detection and community detection, the conclusion will identify entities that exhibit suspicious behavior or are disconnected from the rest of the network.\nThe team will evaluate the evidence presented by the network graph, incorporating external supporting literature reviews to assess the overall credibility and significance of the findings."
   }
 ]
