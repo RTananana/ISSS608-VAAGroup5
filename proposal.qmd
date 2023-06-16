@@ -34,7 +34,7 @@ The dataset given is an undirected multi-graph.
 ## 3.1 Nodes Attributes
 
 | Column Name      | Data Type | Description                                                                                  |
-|---------------|---------------|------------------------------------------|
+|-----------------|-----------------|---------------------------------------|
 | type             | character | Type of node that is a company or person.                                                    |
 | country          | character | Country associated with the entity. This can be a full country or a two-letter country code. |
 | product_services | character | Description of product services that the "id" node does.                                     |
@@ -45,7 +45,7 @@ The dataset given is an undirected multi-graph.
 ## 3.2 Edges Attributes
 
 | Column Name | Data Type | Description                                                                  |
-|---------------|---------------|------------------------------------------|
+|-----------------|-----------------|---------------------------------------|
 | type        | character | Type of edge that is a person.                                               |
 | source      | character | ID of the source node.                                                       |
 | target      | character | ID of the target node.                                                       |
@@ -56,7 +56,7 @@ The dataset given is an undirected multi-graph.
 ## 4.1 Packages to be used
 
 | Package      | Usage                                                                                                                                                                   |
-|------------------|------------------------------------------------------|
+|-------------------|-----------------------------------------------------|
 | jsonlite     | To import nodes and edges data from json format files                                                                                                                   |
 | tidygraph    | Allow users to manipulate and analyze network graphs using a tidy data framework.                                                                                       |
 | ggraph       | Provides various options for creating aesthetically pleasing and informative network visualizations                                                                     |
@@ -121,3 +121,9 @@ Network analysis will be conducted using the following methods:
 Grouped together with the various analysis of outlier detection and community detection, the conclusion will identify entities that exhibit suspicious behavior or are disconnected from the rest of the network.
 
 The team will evaluate the evidence presented by the network graph, incorporating external supporting literature reviews to assess the overall credibility and significance of the findings.
+
+# 6. Project Timeline & Task Allocation
+
+To ensure the project tasks are fulfilled the following timeline and task allocation will be adopted.
+
+![Gantt Chart for Group 5](images/gnatt_chart.PNG)
