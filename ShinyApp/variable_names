@@ -2,3 +2,8 @@ variable_cty - PY
 var_btw - PY
 barPlot - PY
 betweenPlot - PY
+var_cluster_btw - PY
+var_cluster_close - PY
+var_cluster_eigen - PY
+closePlot - PY
+eigenPlot - PY

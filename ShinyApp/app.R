@@ -53,10 +53,27 @@ mc3_graph <- tbl_graph(nodes = mc3_nodes1,
          closeness_centrality = centrality_closeness(),
          eigen_centrality = centrality_eigen())
 
+
 #---------- Betweenness centrality-------------#
 max_betweenness <- max(as.data.frame(mc3_graph)$betweenness_centrality)
 min_betweenness <- min(as.data.frame(mc3_graph)$betweenness_centrality)
 mean_betweenness <-mean(as.data.frame(mc3_graph)$betweenness_centrality)
+
+#---------- Closeness centrality-------------#
+mc3_graph <- mc3_graph %>%
+  mutate(closeness_centrality = replace(closeness_centrality, is.nan(closeness_centrality), 0))
+
+max_close <- max(as.data.frame(mc3_graph)$closeness_centrality)
+min_close <- min(as.data.frame(mc3_graph)$closeness_centrality)
+mean_close <-mean(as.data.frame(mc3_graph)$closeness_centrality)
+
+#---------- Eigen centrality-------------#
+mc3_graph <- mc3_graph %>%
+  mutate(eigen_centrality = replace(eigen_centrality, is.nan(eigen_centrality), 0))
+
+max_eigen <- max(as.data.frame(mc3_graph)$eigen_centrality)
+min_eigen <- min(as.data.frame(mc3_graph)$eigen_centrality)
+mean_eigen <-mean(as.data.frame(mc3_graph)$eigen_centrality)
 
 
 # Shiny App UI--------------------------------------------------------------------------------------------------- 
@@ -65,49 +82,123 @@ mean_betweenness <-mean(as.data.frame(mc3_graph)$betweenness_centrality)
 ui <- navbarPage("Illegal Fishing Network Analysis",
                  theme = "https://bootswatch.com/3/cosmo/bootstrap.min.css",
                  
-  #------------------------------------ Application 1 ---------------------------------------------# PY
-                  # Application title
-                  tabPanel("Nodes Distribution",
-                    titlePanel("Nodes Types Distribution"),
-                  
-                  # Sidebar with a select input for country 
-                    sidebarLayout(
-                      sidebarPanel(width =3,
-                        selectInput(inputId = "variable_cty",
-                                    label = "Please select Country",
-                                    choices = c("All",unique(mc3_nodes$country)))
-                      ),
-                      
-                      # Show a plot of the generated distribution
-                      mainPanel(
-                        plotlyOutput("barPlot")
-                      )
-                    )
-                  ),
-  #------------------------------------ Application 2 ---------------------------------------------# PY
+                 #------------------------------------ Application 1 ---------------------------------------------# PY
                  # Application title
-                 tabPanel("Network Graph",
-                    titlePanel("Betweenness Centrality"),
-                    
-                    # Sidebar with a slider input for number of bins 
-                    sidebarLayout(
-                      sidebarPanel(width = 3,
-                        sliderInput("var_btw", "Score:", min = min_betweenness, max = max_betweenness, value = mean_betweenness, sep = "", width = '100%')
-                      ),
-                      
-                      # Show a plot of the generated distribution
-                      mainPanel(
-                        plotOutput("betweenPlot")
-                      )
-                    )
+                 tabPanel("Nodes Distribution",
+                          titlePanel("Nodes Types Distribution"),
+                          
+                          # Sidebar with a select input for country 
+                          sidebarLayout(
+                            sidebarPanel(width =3,
+                                         selectInput(inputId = "variable_cty",
+                                                     label = "Please select Country",
+                                                     choices = c("All",unique(mc3_nodes$country)))
+                            ),
+                            
+                            # Show a plot of the generated distribution
+                            mainPanel(
+                              plotlyOutput("barPlot")
+                            )
+                          )
+                 ),
+                 #------------------------------------ Application 2 ---------------------------------------------# PY
+                 # Application title
+                 navbarMenu("Network Graph",
+                            tabPanel("Betweenness Centrality",
+                                     titlePanel("Betweenness Centrality"),
+                                     
+                                     # Sidebar with a slider input for number of bins 
+                                     sidebarLayout(
+                                       sidebarPanel(width = 3,
+                                                    selectInput(inputId = "var_cluster_btw",
+                                                                label = "Cluster Option",
+                                                                choices = c("Louvain", "Fast Greedy", "Edge Betweenness",
+                                                                            "Walktrap", "Infomap")),
+                                                    sliderInput("var_btw", "Score:"
+                                                                , min = mean_betweenness
+                                                                , max = max_betweenness
+                                                                , value = mean_betweenness
+                                                                , step = 10000 
+                                                                , sep = ""
+                                                                , width = '100%'
+                                                                , animate =
+                                                                  animationOptions(interval = 2000, loop = TRUE))
+                                       ),
+                                       
+                                       # Show a plot of the generated distribution
+                                       mainPanel(
+                                         plotOutput("betweenPlot")
+                                       )
+                                     )
+                            ),
+                            
+                            #--------------------------------Tab 2 ------------------------------------                 
+                            tabPanel("Closeness Centrality",
+                                     titlePanel("Closeness Centrality"),
+                                     
+                                     # Sidebar with a slider input for number of bins
+                                     sidebarLayout(
+                                       sidebarPanel(width = 3,
+                                                    selectInput(inputId = "var_cluster_close",
+                                                                label = "Cluster Option",
+                                                                choices = c("Louvain", "Fast Greedy", "Edge Betweenness",
+                                                                            "Walktrap", "Infomap")),
+                                                    sliderInput("var_close", "Score:"
+                                                                , min = min_close
+                                                                , max = max_close
+                                                                , value = mean_close
+                                                                , step = 0.1
+                                                                , sep = ""
+                                                                , width = '100%'
+                                                                , animate =
+                                                                  animationOptions(interval = 3000, loop = TRUE))
+                                       ),
+                                       
+                                       # Show a plot of the generated distribution
+                                       mainPanel(
+                                         plotOutput("closePlot")
+                                       )
+                                     )
+                            ),
+                            
+                            #--------------------------------Tab 3 ------------------------------------                 
+                            tabPanel("Eigenvector Centrality",
+                                     titlePanel("Eigenvector Centrality"),
+                                     
+                                     # Sidebar with a slider input for number of bins
+                                     sidebarLayout(
+                                       sidebarPanel(width = 3,
+                                                    selectInput(inputId = "var_cluster_eigen",
+                                                                label = "Cluster Option",
+                                                                choices = c("Louvain", "Fast Greedy", "Edge Betweenness",
+                                                                            "Walktrap", "Infomap")),
+                                                    sliderInput("var_eigen", "Score:"
+                                                                , min = min_eigen
+                                                                , max = max_eigen
+                                                                , value = mean_eigen
+                                                                #, step = 0.1
+                                                                , sep = ""
+                                                                , width = '100%'
+                                                                , animate =
+                                                                  animationOptions(interval = 3000, loop = TRUE))
+                                       ),
+                                       
+                                       # Show a plot of the generated distribution
+                                       mainPanel(
+                                         plotOutput("eigenPlot")
+                                       )
+                                     )
+                            )
+                            
                  )
-                )
+                 
+)
 
 #---------------------------------------------------------------------------------------------------------------#
 
 server <- function(input, output) {
   
-#--------------------------------- Node Distribution Code ------------------------------------# PY
+  #--------------------------------- Node Distribution Code ------------------------------------# PY
   
   node_bar_df <- reactive({
     if (input$variable_cty != 'All') {
@@ -129,7 +220,7 @@ server <- function(input, output) {
     colnames(sub_df)[3] <- "type2"
     colnames(sub_df)[4] <- "percentage_type"
     
-     sub_df |> 
+    sub_df |> 
       plot_ly() |> 
       add_trace(
         labels = ~type,
@@ -147,7 +238,11 @@ server <- function(input, output) {
   
   btw_ggraph <- reactive({
     
-    filtered_graph <- mc3_graph %>%
+    #--- To change after obtaining filter of words ---#
+    mc3_graph_filtered <- mc3_graph
+    
+    #-------------------------------------------------#
+    filtered_graph <- mc3_graph_filtered %>%
       filter(betweenness_centrality >= input$var_btw)
     
     single_nodes <- V(filtered_graph)[degree(filtered_graph) == 0]
@@ -155,8 +250,78 @@ server <- function(input, output) {
     # Remove single nodes from the filtered graph
     filtered_graph <- delete.vertices(filtered_graph, single_nodes)
     
+    if (input$var_cluster_btw == "Louvain") {
+      GNC <- cluster_louvain(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_btw == "Fast Greedy") {
+      GNC <- cluster_fast_greedy(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_btw == "Edge Betweenness") {
+      GNC <- cluster_edge_betweenness(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_btw == "Walktrap") {
+      GNC <- cluster_walktrap(filtered_graph, weights = NULL)
+    } else {
+      GNC <- cluster_infomap(filtered_graph)
+    }
     
-    GNC <- cluster_louvain(filtered_graph, weights = NULL)
+    set.seed(1234)
+    # Get the unique social groups in the filtered graph
+    unique_groups <- unique(membership(GNC))
+    
+    # Set the node colors using the rainbow_hcl palette from the colorspace package
+    node_colors <- rainbow_hcl(length(unique_groups))
+    
+    # Add the node colors to the filtered graph
+    V(filtered_graph)$color <- node_colors[membership(GNC)]
+    
+    # Create a data frame with the membership numbers and corresponding colors
+    # Create a data frame with the membership numbers, colors, and labels
+    legend_data <- data.frame(Membership = unique_groups, Color = node_colors)
+    
+    community <- as.factor(membership(GNC))
+    # Plot the filtered graph
+    ggraph(filtered_graph, layout = "fr") +
+      geom_edge_link(aes(alpha = 0.5)) +
+      geom_node_point(aes(size = betweenness_centrality, color = community), alpha = 0.5) +
+      #geom_node_text(aes(label = membership(GNC)), vjust = -1) + ##Label community number on graph
+      scale_size_continuous(range = c(1, 10)) +
+      scale_color_manual(values = node_colors) +  # Set the node colors manually
+      #guides(color = FALSE) +  # Remove the color legend
+      theme_graph()
+    
+  })
+  
+  output$betweenPlot <- renderPlot({
+    btw_ggraph()
+  })
+  
+  #--------------------------------- Network Closeness Code ------------------------------------# PY
+  
+  close_ggraph <- reactive({
+    #--- To change after obtaining filter of words ---#
+    mc3_graph_filtered <- mc3_graph
+    
+    #-------------------------------------------------#
+    
+    filtered_graph <- mc3_graph_filtered %>%
+      filter(closeness_centrality >= input$var_close)
+    
+    # Identify single nodes (degree 0)
+    single_nodes <- V(filtered_graph)[degree(filtered_graph) == 0]
+    
+    # Remove single nodes from the filtered graph
+    filtered_graph <- delete.vertices(filtered_graph, single_nodes)
+    
+    
+    if (input$var_cluster_close == "Louvain") {
+      GNC <- cluster_louvain(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_close == "Fast Greedy") {
+      GNC <- cluster_fast_greedy(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_close == "Edge Betweenness") {
+      GNC <- cluster_edge_betweenness(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_close == "Walktrap") {
+      GNC <- cluster_walktrap(filtered_graph, weights = NULL)
+    } else {
+      GNC <- cluster_infomap(filtered_graph)
+    }
     
     set.seed(1234)
     # Get the unique social groups in the filtered graph
@@ -173,11 +338,12 @@ server <- function(input, output) {
     legend_data <- data.frame(Membership = unique_groups, Color = node_colors)
     
     
+    community <- as.factor(membership(GNC))
     # Plot the filtered graph
     ggraph(filtered_graph, layout = "fr") +
       geom_edge_link(aes(alpha = 0.5)) +
-      geom_node_point(aes(size = betweenness_centrality, color = as.factor(membership(GNC))), alpha = 0.5) +
-      geom_node_text(aes(label = membership(GNC)), vjust = -1) +
+      geom_node_point(aes(size = closeness_centrality, color = community), alpha = 0.5) +
+      #geom_node_text(aes(label = membership(GNC)), vjust = -1) + ##Label community number on graph
       scale_size_continuous(range = c(1, 10)) +
       scale_color_manual(values = node_colors) +  # Set the node colors manually
       guides(color = FALSE) +  # Remove the color legend
@@ -185,10 +351,71 @@ server <- function(input, output) {
     
   })
   
-  output$betweenPlot <- renderPlot({
-    btw_ggraph()
+  output$closePlot <- renderPlot({
+    close_ggraph()
   })
-
+  
+  #--------------------------------- Eigenvector Code ------------------------------------# PY
+  
+  eigen_ggraph <- reactive({
+    #--- To change after obtaining filter of words ---#
+    mc3_graph_filtered <- mc3_graph
+    
+    #-------------------------------------------------#
+    
+    filtered_graph <- mc3_graph_filtered %>%
+      filter(eigen_centrality >= input$var_eigen)
+    
+    
+    # Identify single nodes (degree 0)
+    single_nodes <- V(filtered_graph)[degree(filtered_graph) == 0]
+    
+    # Remove single nodes from the filtered graph
+    filtered_graph <- delete.vertices(filtered_graph, single_nodes)
+    
+    if (input$var_cluster_eigen == "Louvain") {
+      GNC <- cluster_louvain(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_eigen == "Fast Greedy") {
+      GNC <- cluster_fast_greedy(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_eigen == "Edge Betweenness") {
+      GNC <- cluster_edge_betweenness(filtered_graph, weights = NULL)
+    } else if (input$var_cluster_eigen == "Walktrap") {
+      GNC <- cluster_walktrap(filtered_graph, weights = NULL)
+    } else {
+      GNC <- cluster_infomap(filtered_graph)
+    }
+    
+    set.seed(1234)
+    # Get the unique social groups in the filtered graph
+    unique_groups <- unique(membership(GNC))
+    
+    # Set the node colors using the rainbow_hcl palette from the colorspace package
+    node_colors <- rainbow_hcl(length(unique_groups))
+    
+    # Add the node colors to the filtered graph
+    V(filtered_graph)$color <- node_colors[membership(GNC)]
+    
+    # Create a data frame with the membership numbers and corresponding colors
+    # Create a data frame with the membership numbers, colors, and labels
+    legend_data <- data.frame(Membership = unique_groups, Color = node_colors)
+    
+    community <- as.factor(membership(GNC))
+    # Plot the filtered graph
+    ggraph(filtered_graph, layout = "fr") +
+      geom_edge_link(aes(alpha = 0.5)) +
+      geom_node_point(aes(size = eigen_centrality, color = community), alpha = 0.5) +
+      #geom_node_text(aes(label = membership(GNC)), vjust = -1) + ##Label community number on graph
+      scale_size_continuous(range = c(1, 10)) +
+      scale_color_manual(values = node_colors) +  # Set the node colors manually
+      #guides(color = FALSE) +  # Remove the color legend
+      theme_graph()
+    
+  })
+  
+  output$eigenPlot <- renderPlot({
+    eigen_ggraph()
+  })
+  
 }
 
 # Run the application 
