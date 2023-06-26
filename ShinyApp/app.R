@@ -197,7 +197,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                  tabPanel("Text Analysis",
                           titlePanel("Text Analysis with tidytext for Product Services"),
                           sidebarLayout(
-                            sidebarPanel(
+                            sidebarPanel(width = 2,
                               # Allow Customized stop words inclusion
                               checkboxInput("remove_words", "Remove specific words?", FALSE
                                             ),
@@ -492,6 +492,7 @@ server <- function(input, output) {
     add_row(word="services",lexicon="SMART") %>% 
     add_row(word="related",lexicon="SMART") %>% 
     add_row(word="unknown",lexicon="SMART") %>% 
+    add_row(word="character",lexicon="SMART") %>% 
     add_row(word="including",lexicon="SMART")
   
   token_nodes %>% 
