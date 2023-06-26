@@ -7,3 +7,6 @@ var_cluster_close - PY
 var_cluster_eigen - PY
 closePlot - PY
 eigenPlot - PY
+wrdcloud - RT
+remove_words -RT
+words_to_remove (1 to 10) - RT

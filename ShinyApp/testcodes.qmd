@@ -1,0 +1,37 @@
+---
+title: "test code"
+---
+
+```{r}
+pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
+                , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
+                , DT, igraph, scales, viridis, colorspace, stringr
+                , knitr, wordcloud, bslib, thematic, shiny, colourpicker
+                , devtools, wordcloud2, tm)
+
+mc3 <-fromJSON("data/MC3.json")
+
+inputdata <- mc3_nodes %>%
+      select(product_services)
+
+mc3_nodes <- as_tibble(mc3$nodes) %>%
+  distinct() %>%
+  mutate(country = as.character(country),
+         id = as.character(id),
+         product_services = as.character(product_services),
+         revenue_omu = as.numeric(as.character(revenue_omu)),
+         type = as.character(type)) %>%
+  select (id, country, type, revenue_omu, product_services)
+
+token_nodes <- mc3_nodes %>%
+      unnest_tokens(word,
+                    product_services) 
+
+token_nodes %>%
+      filter(str_detect(tolower(word),"seafood"))
+
+token_nodes <- mc3_nodes %>%
+      unnest_tokens(word, 
+                    product_services)
+                        
+```

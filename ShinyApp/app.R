@@ -1,7 +1,8 @@
 pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
                 , DT, igraph, scales, viridis, colorspace, stringr
-                , knitr, wordcloud, bslib, thematic)
+                , knitr, wordcloud, bslib, thematic, shiny, colourpicker
+                , devtools, wordcloud2, tm)
 # Code Chuck----------------------------------------------------------------------------------------------------
 #------ Read Data
 mc3 <-fromJSON("data/MC3.json")
@@ -190,9 +191,72 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                      )
                             )
                             
+                 ),
+                 
+                 #------------------------------------ Application 3 ---------------------------------------------# RT
+                 tabPanel("Text Analysis",
+                          titlePanel("Text Analysis with tidytext for Product Services"),
+                          sidebarLayout(
+                            sidebarPanel(
+                              # Allow Customized stop words inclusion
+                              checkboxInput("remove_words", "Remove specific words?", FALSE
+                                            ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1",
+                                textAreaInput("words_to_remove1", "Words to remove (one per line)", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove1.length > 0",
+                                textAreaInput("words_to_remove2", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove2.length > 0",
+                                textAreaInput("words_to_remove3", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove3.length > 0",
+                                textAreaInput("words_to_remove4", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove4.length > 0",
+                                textAreaInput("words_to_remove5", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove5.length > 0",
+                                textAreaInput("words_to_remove6", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove6.length > 0",
+                                textAreaInput("words_to_remove7", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove7.length > 0",
+                                textAreaInput("words_to_remove8", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove8.length > 0",
+                                textAreaInput("words_to_remove9", "", rows = 1)
+                                ),
+                              conditionalPanel(
+                                condition = "input.remove_words == 1 && input.words_to_remove9.length > 0",
+                                textAreaInput("words_to_remove10", "", rows = 1)
+                                ),
+                              numericInput("num", "Maximum number of words",
+                                           value = 100, min = 5
+                                           ),
+                              colourInput("col", "Background color", value = "white")
+                            ),
+                            mainPanel(
+                              wordcloud2Output("cloud")
+                              )
+                            )
+                          )
+                 
                  )
                  
-)
+                 
+
+
 
 #---------------------------------------------------------------------------------------------------------------#
 
@@ -415,8 +479,77 @@ server <- function(input, output) {
   output$eigenPlot <- renderPlot({
     eigen_ggraph()
   })
+ 
+  #--------------------------------- Text Analysis Code ------------------------------------# RT
+  wrdcloud <- reactive({
+    token_nodes <- mc3_nodes %>%
+      unnest_tokens(word, 
+                    product_services)
+  
+  new_stop_words <- stop_words %>% 
+    add_row(word=NA,lexicon="SMART") %>% 
+    add_row(word="products",lexicon="SMART") %>% 
+    add_row(word="services",lexicon="SMART") %>% 
+    add_row(word="related",lexicon="SMART") %>% 
+    add_row(word="unknown",lexicon="SMART") %>% 
+    add_row(word="including",lexicon="SMART")
+  
+  token_nodes %>% 
+    anti_join(new_stop_words) 
+  
+  })
+  
+  create_wordcloud <- function(data, num_words = 100, background = "white") {
+    
+    # If text is provided, convert it to a dataframe of word frequencies
+    if (is.character(data$word)) {
+      corpus <- Corpus(VectorSource(data$word))
+      corpus <- tm_map(corpus, tolower)
+      corpus <- tm_map(corpus, removePunctuation)
+      corpus <- tm_map(corpus, removeNumbers)
+      corpus <- tm_map(corpus, removeWords, stopwords(tolower("English")))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove1))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove2))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove3))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove4))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove5))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove6))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove7))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove8))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove9))
+      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove10))
+      tdm <- as.matrix(TermDocumentMatrix(corpus))
+      data <- sort(rowSums(tdm), decreasing = TRUE)
+      data <- data.frame(word = names(data), freq = as.numeric(data))
+    }
+    
+    # Make sure a proper num_words is provided
+    if (!is.numeric(num_words) || num_words < 3) {
+      num_words <- 3
+    }
+    
+    # Grab the top n most common words
+    data <- head(data, n = num_words)
+    if (nrow(data) == 0) {
+      return(NULL)
+    }
+    
+    wordcloud2(data, backgroundColor = background)
+  }
+  
+  output$cloud <- renderWordcloud2({
+    create_wordcloud(wrdcloud(),
+                     num_words = input$num,
+                     background = input$col
+    )
+  })
+
+  
   
 }
+  
+   
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
