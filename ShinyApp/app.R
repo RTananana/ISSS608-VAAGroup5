@@ -2,7 +2,7 @@ pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
                 , DT, igraph, scales, viridis, colorspace, stringr
                 , knitr, wordcloud, bslib, thematic, shiny, colourpicker
-                , devtools, wordcloud2, tm)
+                , devtools, wordcloud2, tm, quanteda)
 # Code Chuck----------------------------------------------------------------------------------------------------
 #------ Read Data
 mc3 <-fromJSON("data/MC3.json")
@@ -194,67 +194,124 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                  ),
                  
                  #------------------------------------ Application 3 ---------------------------------------------# RT
-                 tabPanel("Text Analysis",
-                          titlePanel("Text Analysis with tidytext for Product Services"),
-                          sidebarLayout(
-                            sidebarPanel(width = 2,
-                              # Allow Customized stop words inclusion
-                              checkboxInput("remove_words", "Remove specific words?", FALSE
-                                            ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1",
-                                textAreaInput("words_to_remove1", "Words to remove (one per line)", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove1.length > 0",
-                                textAreaInput("words_to_remove2", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove2.length > 0",
-                                textAreaInput("words_to_remove3", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove3.length > 0",
-                                textAreaInput("words_to_remove4", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove4.length > 0",
-                                textAreaInput("words_to_remove5", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove5.length > 0",
-                                textAreaInput("words_to_remove6", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove6.length > 0",
-                                textAreaInput("words_to_remove7", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove7.length > 0",
-                                textAreaInput("words_to_remove8", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove8.length > 0",
-                                textAreaInput("words_to_remove9", "", rows = 1)
-                                ),
-                              conditionalPanel(
-                                condition = "input.remove_words == 1 && input.words_to_remove9.length > 0",
-                                textAreaInput("words_to_remove10", "", rows = 1)
-                                ),
-                              numericInput("num", "Maximum number of words",
-                                           value = 100, min = 5
-                                           ),
-                              colourInput("col", "Background color", value = "white")
+                 navbarMenu("Text Analysis",
+                            
+                            #--------------------------------Tab 1 ------------------------------------   
+                            tabPanel("Unigram Analysis",
+                                     titlePanel("Text Analysis with tidytext for Product Services"),
+                                     sidebarLayout(
+                                       sidebarPanel(width = 2,
+                                                    # Allow Customized stop words inclusion
+                                                    checkboxInput("remove_words", "Remove specific words?", FALSE
+                                                                  ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1",
+                                                      textAreaInput("words_to_remove1", "Words to remove (one per line)", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove1.length > 0",
+                                                      textAreaInput("words_to_remove2", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove2.length > 0",
+                                                      textAreaInput("words_to_remove3", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove3.length > 0",
+                                                      textAreaInput("words_to_remove4", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove4.length > 0",
+                                                      textAreaInput("words_to_remove5", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove5.length > 0",
+                                                      textAreaInput("words_to_remove6", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove6.length > 0",
+                                                      textAreaInput("words_to_remove7", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove7.length > 0",
+                                                      textAreaInput("words_to_remove8", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove8.length > 0",
+                                                      textAreaInput("words_to_remove9", "", rows = 1)
+                                                      ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words == 1 && input.words_to_remove9.length > 0",
+                                                      textAreaInput("words_to_remove10", "", rows = 1)
+                                                      ),
+                                                    numericInput("num", "Maximum number of words",
+                                                                 value = 100, min = 5
+                                                                 ),
+                                                    colourInput("col", "Background color", value = "white")
+                                                    ),
+                                       mainPanel(
+                                         wordcloud2Output("cloud")
+                                         )
+                                       )
+                                     ),
+                            #--------------------------------Tab 2 ------------------------------------   
+                            tabPanel("Bigram Analysis",
+                                     titlePanel("Text Analysis with tidytext for Product Services"),
+                                     sidebarLayout(
+                                       sidebarPanel(width = 2,
+                                                    # Allow Customized stop words inclusion
+                                                    checkboxInput("remove_words_bi", "Remove specific words?", FALSE
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1",
+                                                      textAreaInput("words_to_remove_bi_1", "Words to remove (one per line)", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_1.length > 0",
+                                                      textAreaInput("words_to_remove_bi_2", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_2.length > 0",
+                                                      textAreaInput("words_to_remove_bi_3", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_3.length > 0",
+                                                      textAreaInput("words_to_remove_bi_4", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_4.length > 0",
+                                                      textAreaInput("words_to_remove_bi_5", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_5.length > 0",
+                                                      textAreaInput("words_to_remove_bi_6", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_6.length > 0",
+                                                      textAreaInput("words_to_remove_bi_7", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_7.length > 0",
+                                                      textAreaInput("words_to_remove_bi_8", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_8.length > 0",
+                                                      textAreaInput("words_to_remove_bi_9", "", rows = 1)
+                                                    ),
+                                                    conditionalPanel(
+                                                      condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_9.length > 0",
+                                                      textAreaInput("words_to_remove_bi_10", "", rows = 1)
+                                                    )
+                                       ),
+                                       mainPanel(
+                                         DTOutput("filtered_tbl")
+                                       )
+                                     )
                             ),
-                            mainPanel(
-                              wordcloud2Output("cloud")
-                              )
+                            
+                            
                             )
-                          )
-                 
                  )
-                 
-                 
 
 
 
@@ -481,6 +538,10 @@ server <- function(input, output) {
   })
  
   #--------------------------------- Text Analysis Code ------------------------------------# RT
+  
+  #--------------------------------- Unigram Analysis - wordcloud --------------------------# RT
+  
+  
   wrdcloud <- reactive({
     token_nodes <- mc3_nodes %>%
       unnest_tokens(word, 
@@ -535,6 +596,7 @@ server <- function(input, output) {
       return(NULL)
     }
     
+    set.seed(1234)
     wordcloud2(data, backgroundColor = background)
   }
   
@@ -545,6 +607,92 @@ server <- function(input, output) {
     )
   })
 
+  #--------------------------------- Bigram Analysis - wordcloud --------------------------# RT
+  
+  
+  bigram <- reactive({
+    token_nodes2 <- mc3_nodes %>%
+      unnest_tokens(
+        input = product_services, 
+        output = bigram, 
+        token = 'ngrams', 
+        n = 2) %>%
+      filter(! is.na(bigram))
+    
+    new_stop_words_bi <- stop_words %>% 
+      add_row(word=NA,lexicon="SMART") %>%
+      add_row(word="related",lexicon="SMART") %>%
+      add_row(word="including",lexicon="SMART") %>%
+      add_row(word="wide",lexicon="SMART") %>%
+      add_row(word="range",lexicon="SMART") %>%
+      add_row(word="freelance",lexicon="SMART") %>%
+      add_row(word="researcher",lexicon="SMART") %>%
+      add_row(word="products",lexicon="SMART") %>%
+      add_row(word="processing",lexicon="SMART") %>%
+      add_row(word="preparations",lexicon="SMART") %>%
+      add_row(word="food",lexicon="SMART") %>%
+      add_row(word="items",lexicon="SMART") %>%
+      add_row(word="character",lexicon="SMART") %>%
+      add_row(word="0",lexicon="SMART") %>%
+      add_row(word="unknown",lexicon="SMART") %>%
+      add_row(word="services",lexicon="SMART")
+    
+    token_nodes2 %>%  
+      separate(col = bigram, into = c('word1', 'word2'), sep = ' ') %>% 
+      filter(! word1 %in% new_stop_words_bi$word) %>% 
+      filter(! word2 %in% new_stop_words_bi$word) %>% 
+      filter(! is.na(word1)) %>% 
+      filter(! is.na(word2))%>% 
+      select(word1, word2)
+    
+  })
+  
+  create_datatable <- function(data) {
+    if (is.character(data$word1) & is.character(data$word2)) {
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_1) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_1)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_2) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_2)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_3) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_3)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_4) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_4)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_5) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_5)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_6) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_6)
+      data <- data %>%
+        filter(! word1 %in% input$words_to_remove_bi_7) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_7)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_8) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_8)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_9) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_9)
+      data <- data %>% 
+        filter(! word1 %in% input$words_to_remove_bi_10) %>% 
+        filter(! word2 %in% input$words_to_remove_bi_10)
+      
+    }
+
+    data <- data %>%
+      count(word1, word2, sort = TRUE) %>%
+      # We rename the weight column so that the 
+      # associated network gets the weights (see below).
+      rename(weight = n)
+    
+    datatable(data)
+  }
+  
+  
+  output$filtered_tbl = renderDT(create_datatable(bigram()))
   
   
 }
