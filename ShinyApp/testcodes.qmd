@@ -7,7 +7,7 @@ pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
                 , DT, igraph, scales, viridis, colorspace, stringr
                 , knitr, wordcloud, bslib, thematic, shiny, colourpicker
-                , devtools, wordcloud2, tm)
+                , devtools, wordcloud2, tm, data.table)
 
 mc3 <-fromJSON("data/MC3.json")
 
@@ -66,8 +66,7 @@ data <- token_nodes2 %>%
       filter(! word2 %in% new_stop_words_bi$word) %>% 
       filter(! is.na(word1)) %>% 
       filter(! is.na(word2))%>% 
-      select(word1, word2) %>%
-      unite(bigram, word1, word2, sep = " ")
+      select(word1, word2) 
 
 token_nodes2 %>%  
   separate(col = bigram, into = c('word1', 'word2'), sep = ' ') %>% 
@@ -156,4 +155,81 @@ create_datatable <- function(data) {
       rename(weight = n)
   }
 
+
+create_datatable <- function(data) {
+    if (is.character(data$word1) & is.character(data$word2)) {
+      data <- data %>% 
+        filter(! word1 %in% "frozen") %>% 
+        filter(! word2 %in% "frozen")
+      
+    }
+
+    data <- data %>%
+      count(word1, word2, sort = TRUE) %>%
+      # We rename the weight column so that the 
+      # associated network gets the weights (see below).
+      rename(weight = n)
+    
+    return(data)
+  }
+
+
+create_datatable(data)
+
+bi.gram.count <- create_datatable(data)
+
+str(bi.gram.count) 
+bi.gram.count <- as.matrix(bi.gram.count)
+threshold <- 3
+
+bi.gram.count %>%
+      mutate(weight = log(weight + 1))%>%
+      filter(weight > threshold) %>%
+      graph_from_data_frame(directed = FALSE)
+
+
+network <- reactive({
+    
+    bi.gram.count <- create_datatable(bigram())
+    
+    bi.gram.count <- bi.gram.count %>% 
+      filter(weight > input$threshold) %>%
+      graph_from_data_frame(directed = FALSE)
+    
+    V(bi.gram.count)$cluster <- clusters(graph = bi.gram.count)$membership
+    
+    cc.bi.gram.count <- induced_subgraph(
+      graph = bi.gram.count,
+      vids = which(V(bi.gram.count)$cluster == which.max(clusters(graph = bi.gram.count)$csize))
+      )
+  
+    V(cc.bi.gram.count)$degree <- strength(graph = cc.bi.gram.count)
+    E(cc.bi.gram.count)$width <- E(cc.bi.gram.count)$weight/max(E(cc.bi.gram.count)$weight)
+  
+  
+    network.D3 <- igraph_to_networkD3(g = cc.bi.gram.count)
+    network.D3$nodes <- network.D3$nodes %>%
+      mutate(Degree = (1E-2)*V(cc.bi.gram.count)$degree) %>%   
+      mutate(Group = 1)
+  
+    network.D3$links$Width <- 8*E(cc.bi.gram.count)$width
+  
+    forceNetwork(
+      Links = network.D3$links, 
+      Nodes = network.D3$nodes, 
+      Source = 'source', 
+      Target = 'target',
+      NodeID = 'name',
+      Group = 'Group', 
+      opacity = input$opacity,
+      Value = 'Width',
+      Nodesize = 'Degree', 
+      # We input a JavaScript function.
+      linkWidth = JS("function(d) { return Math.sqrt(d.value); }"), 
+      fontSize = 12,
+      zoom = TRUE, 
+      opacityNoHover = 1
+    )
+  })
+  
 ```

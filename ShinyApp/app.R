@@ -2,7 +2,7 @@ pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
                 , DT, igraph, scales, viridis, colorspace, stringr
                 , knitr, wordcloud, bslib, thematic, shiny, colourpicker
-                , devtools, wordcloud2, tm, quanteda)
+                , devtools, wordcloud2, tm, quanteda, networkD3)
 # Code Chuck----------------------------------------------------------------------------------------------------
 #------ Read Data
 mc3 <-fromJSON("data/MC3.json")
@@ -301,10 +301,24 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                                     conditionalPanel(
                                                       condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_9.length > 0",
                                                       textAreaInput("words_to_remove_bi_10", "", rows = 1)
-                                                    )
+                                                    ),
+                                                    numericInput("threshold", "Threshold Level:",
+                                                                 value = 3, min = 1
+                                                    ),
+                                                    sliderInput("opacity",
+                                                                "Opacity of Graph Network",
+                                                                min = 0.1,
+                                                                max = 1,
+                                                                value = 0.8
+                                                                ),
+                                                    selectInput(inputId = "bigramcluster",
+                                                                label = "Cluster Option",
+                                                                choices = c("Louvain", "Edge Betweenness", "Walktrap", "Infomap"))
                                        ),
                                        mainPanel(
+                                         forceNetworkOutput(outputId = "net"),
                                          DTOutput("filtered_tbl")
+                                         
                                        )
                                      )
                             ),
@@ -688,12 +702,74 @@ server <- function(input, output) {
       # associated network gets the weights (see below).
       rename(weight = n)
     
-    datatable(data)
+    return(data)
   }
   
   
   output$filtered_tbl = renderDT(create_datatable(bigram()))
   
+  #--------------------------------- Bigram Analysis - Network Graph --------------------------# RT
+  
+  bigramcommunity <- reactive({
+    
+    bi.gram.count <- create_datatable(bigram())
+    
+    bi.gram.count <- bi.gram.count %>% 
+      filter(weight > input$threshold) %>%
+      graph_from_data_frame(directed = FALSE)
+    
+    V(bi.gram.count)$cluster <- clusters(graph = bi.gram.count)$membership
+    
+    cc.bi.gram.count <- induced_subgraph(
+      graph = bi.gram.count,
+      vids = which(V(bi.gram.count)$cluster == which.max(clusters(graph = bi.gram.count)$csize))
+    )
+    
+    V(cc.bi.gram.count)$degree <- strength(graph = cc.bi.gram.count)
+    E(cc.bi.gram.count)$width <- E(cc.bi.gram.count)$weight/max(E(cc.bi.gram.count)$weight)
+    
+    if (input$bigramcluster == "Louvain") {
+      bigramcluster <- cluster_louvain(cc.bi.gram.count, weights = E(cc.bi.gram.count)$weight)
+    }  else if (input$bigramcluster == "Edge Betweenness") {
+      bigramcluster <- cluster_edge_betweenness(cc.bi.gram.count, weights = E(cc.bi.gram.count)$weight)
+    } else if (input$bigramcluster == "Walktrap") {
+      bigramcluster <- cluster_walktrap(cc.bi.gram.count, weights = E(cc.bi.gram.count)$weight)
+    } else {
+      bigramcluster <- cluster_infomap(cc.bi.gram.count)
+    }
+    
+    V(cc.bi.gram.count)$membership <- membership(bigramcluster)
+    
+    network.D3 <- igraph_to_networkD3(g = cc.bi.gram.count)
+    network.D3$nodes <- network.D3$nodes %>%
+      mutate(Degree = (1E-2)*V(cc.bi.gram.count)$degree) %>%   
+      mutate(Group = 1)
+    
+    network.D3$links$Width <- 8*E(cc.bi.gram.count)$width
+    
+    network.D3$nodes$Group <- V(cc.bi.gram.count)$membership
+    
+    network.D3$nodes$Group <- as.numeric(network.D3$nodes$Group)
+    
+    forceNetwork(
+      Links = network.D3$links,
+      Nodes = network.D3$nodes,
+      Source = 'source',
+      Target = 'target',
+      NodeID = 'name',
+      Group = 'Group',
+      opacity = 0.9,
+      Value = 'Width',
+      Nodesize = 'Degree',
+      linkWidth = JS("function(d) { return Math.sqrt(d.value); }"),
+      fontSize = 12,
+      zoom = TRUE,
+      opacityNoHover = 1
+    )
+    
+  })
+  
+  output$net <- renderForceNetwork(bigramcommunity())
   
 }
   
