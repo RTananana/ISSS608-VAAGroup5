@@ -10,3 +10,10 @@ eigenPlot - PY
 wrdcloud - RT
 remove_words -RT
 words_to_remove (1 to 10) - RT
+net - RT
+filtered_tbl - RT
+bigramcluster - RT
+threshold -RT 
+words_to_remove_bi_ (1 to 10) - RT
+opacity - RT
+bigramcommunity -RT
