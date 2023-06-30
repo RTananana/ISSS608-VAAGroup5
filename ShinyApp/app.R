@@ -2,7 +2,11 @@ pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , ggforce, tidytext, tidyverse, ggplot2, plotly, skimr
                 , DT, igraph, scales, viridis, colorspace, stringr
                 , knitr, wordcloud, bslib, thematic, shiny, colourpicker
-                , devtools, wordcloud2, tm, quanteda, networkD3)
+                , devtools, wordcloud2, tm, quanteda, networkD3, topicmodels
+                , ldatuning, shinycssloaders, ggwordcloud)
+
+options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
+
 # Code Chuck----------------------------------------------------------------------------------------------------
 #------ Read Data
 mc3 <-fromJSON("data/MC3.json")
@@ -17,7 +21,9 @@ mc3_nodes <- as_tibble(mc3$nodes) %>%
          product_services = as.character(product_services),
          revenue_omu = as.numeric(as.character(revenue_omu)),
          type = as.character(type)) %>%
-  select (id, country, type, revenue_omu, product_services)
+  select (id, country, type, revenue_omu, product_services) %>% 
+  mutate(Type = recode(type, "Company" = 'Company Contacts')) %>% 
+  select(id,country,Type,product_services, revenue_omu)
 
 #--- Edges ---
 mc3_edges <- as_tibble(mc3$links) %>%
@@ -83,7 +89,34 @@ mean_eigen <-mean(as.data.frame(mc3_graph)$eigen_centrality)
 ui <- navbarPage("Illegal Fishing Network Analysis",
                  theme = "https://bootswatch.com/3/cosmo/bootstrap.min.css",
                  
-                 #------------------------------------ Application 1 ---------------------------------------------# PY
+                 #------------------------------------ Application 1 ---------------------------------------------# RT
+                 # Application title
+                 tabPanel("EDA",
+                          titlePanel("Violin Plot"),
+                          
+                          # Sidebar with a select input for country 
+                          sidebarLayout(
+                            sidebarPanel(width =3,
+                                         selectInput(inputId = "violin_country",
+                                                     label = "Please select Country",
+                                                     choices = c("All",unique(mc3_nodes$country))),
+                                         sliderInput("revenue_range", 
+                                                     "Revenue Range:",
+                                                     min = 3652.227,
+                                                     max = 310612303,
+                                                     value = c(3652.227,310612303))
+                            ),
+                            
+                            
+                            # Show a plot of the generated distribution
+                            mainPanel(
+                              fluidRow(withSpinner(plotlyOutput("violinPlot"), type = 3))
+                            )
+                            
+                          )
+                 ),
+                 
+                 #------------------------------------ Application 2 ---------------------------------------------# PY
                  # Application title
                  tabPanel("Nodes Distribution",
                           titlePanel("Nodes Types Distribution"),
@@ -102,7 +135,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                             )
                           )
                  ),
-                 #------------------------------------ Application 2 ---------------------------------------------# PY
+                 #------------------------------------ Application 3 ---------------------------------------------# PY
                  # Application title
                  navbarMenu("Network Graph",
                             tabPanel("Betweenness Centrality",
@@ -193,7 +226,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                             
                  ),
                  
-                 #------------------------------------ Application 3 ---------------------------------------------# RT
+                 #------------------------------------ Application 4 ---------------------------------------------# RT
                  navbarMenu("Text Analysis",
                             
                             #--------------------------------Tab 1 ------------------------------------   
@@ -201,64 +234,82 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                      titlePanel("Text Analysis with tidytext for Product Services"),
                                      sidebarLayout(
                                        sidebarPanel(width = 2,
-                                                    # Allow Customized stop words inclusion
                                                     checkboxInput("remove_words", "Remove specific words?", FALSE
-                                                                  ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1",
                                                       textAreaInput("words_to_remove1", "Words to remove (one per line)", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove1.length > 0",
                                                       textAreaInput("words_to_remove2", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove2.length > 0",
                                                       textAreaInput("words_to_remove3", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove3.length > 0",
                                                       textAreaInput("words_to_remove4", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove4.length > 0",
                                                       textAreaInput("words_to_remove5", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove5.length > 0",
                                                       textAreaInput("words_to_remove6", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove6.length > 0",
                                                       textAreaInput("words_to_remove7", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove7.length > 0",
                                                       textAreaInput("words_to_remove8", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove8.length > 0",
                                                       textAreaInput("words_to_remove9", "", rows = 1)
-                                                      ),
+                                                    ),
                                                     conditionalPanel(
                                                       condition = "input.remove_words == 1 && input.words_to_remove9.length > 0",
                                                       textAreaInput("words_to_remove10", "", rows = 1)
-                                                      ),
-                                                    numericInput("num", "Maximum number of words",
-                                                                 value = 100, min = 5
-                                                                 ),
-                                                    colourInput("col", "Background color", value = "white")
                                                     ),
+                                                    sliderInput("num.topics",
+                                                                "Number of Topics:",
+                                                                min = 2,  max = 20,  value = 5, step = 1
+                                                    ),
+                                                    selectInput(inputId = "ldamethod",
+                                                                label = "LDA Methods",
+                                                                choices = c("Gibbs", "VEM")
+                                                    ),
+                                                    sliderInput("num", "Maximum number of words",
+                                                                min = 5, max = 150, value = 100, step = 1
+                                                    ),
+                                                    colourInput("col", "Background color", value = "white")
+                                       ),
                                        mainPanel(
-                                         wordcloud2Output("cloud")
+                                         fluidRow(
+                                           column(width=6,
+                                                  fluidRow(withSpinner(plotOutput("tm_optimizer"), type = 3), 
+                                                           style = "height:200px")
+                                           ),
+                                           column(width = 6,
+                                                  fluidRow(withSpinner(plotOutput("cloud2"), type = 3), 
+                                                           style = "height:800px")
+                                           )
                                          )
                                        )
-                                     ),
+                                     )
+                            ),
+                            
                             #--------------------------------Tab 2 ------------------------------------   
                             tabPanel("Bigram Analysis",
                                      titlePanel("Text Analysis with tidytext for Product Services"),
                                      sidebarLayout(
                                        sidebarPanel(width = 2,
+                                                    h5("Step 1: Removal of Stopwords"),
                                                     # Allow Customized stop words inclusion
                                                     checkboxInput("remove_words_bi", "Remove specific words?", FALSE
                                                     ),
@@ -302,36 +353,95 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                                       condition = "input.remove_words_bi == 1 && input.words_to_remove_bi_9.length > 0",
                                                       textAreaInput("words_to_remove_bi_10", "", rows = 1)
                                                     ),
-                                                    numericInput("threshold", "Threshold Level:",
-                                                                 value = 3, min = 1
+                                                    sliderInput("threshold", 
+                                                                "Threshold Level:",
+                                                                min = 3,
+                                                                max = 30,
+                                                                value = c(3,10),
+                                                                step = 1
                                                     ),
                                                     sliderInput("opacity",
                                                                 "Opacity of Graph Network",
                                                                 min = 0.1,
                                                                 max = 1,
                                                                 value = 0.8
-                                                                ),
+                                                    ),
                                                     selectInput(inputId = "bigramcluster",
                                                                 label = "Cluster Option",
-                                                                choices = c("Louvain", "Edge Betweenness", "Walktrap", "Infomap"))
+                                                                choices = c("Louvain", "Edge Betweenness", "Walktrap", "Infomap")
+                                                    ),
+                                                    selectInput(inputId = "centralityindication",
+                                                                label = "Centrality Option",
+                                                                choices = c("Degree", "Betweenness", "Closeness"))
                                        ),
                                        mainPanel(
-                                         forceNetworkOutput(outputId = "net"),
-                                         DTOutput("filtered_tbl")
-                                         
+                                         fluidRow(
+                                           column(width=8,
+                                                  fluidRow(withSpinner(forceNetworkOutput(outputId = "net"), type = 3), 
+                                                           style = "height:400px")
+                                           ),
+                                           column(width = 4,
+                                                  fluidRow(withSpinner(DTOutput("filtered_tbl"), type = 3), 
+                                                           style = "height:200px"),
+                                                  fluidRow(withSpinner(DTOutput("centrality_tbl"), type = 3), 
+                                                           style = "height:200px")
+                                           )
+                                         )
                                        )
                                      )
-                            ),
-                            
-                            
                             )
                  )
+)
 
 
 
 #---------------------------------------------------------------------------------------------------------------#
 
 server <- function(input, output) {
+  
+  #--------------------------------- Violin Plot ------------------------------------# RT
+  
+  mc3_nodes_violin<- reactive({
+    
+    violin <- mc3_nodes %>%
+      select(id, country, Type, revenue_omu)
+    
+    violin$revenue_omu <- as.numeric(violin$revenue_omu)
+    
+    if (input$violin_country != 'All') {
+      input_violin_country <- input$violin_country
+      violin <- violin %>%
+        filter(country == input_violin_country) %>% 
+        filter(`revenue_omu` >= input$revenue_range[1]) %>%
+        filter(`revenue_omu` <= input$revenue_range[2])
+    } else{
+      violin <- violin  %>%
+        filter(`revenue_omu` >= input$revenue_range[1]) %>%
+        filter(`revenue_omu` <= input$revenue_range[2])
+    }
+    
+    violin_plot <- violin %>%
+      plot_ly(x = ~Type, y = ~revenue_omu, split = ~Type,
+              type = 'violin',
+              box = list(visible = T),
+              meanline = list(visible = T))  %>%
+      layout(title="Violin Plot of Operating Revenue by Type")
+    
+    violin_plot %>%
+      layout(
+        xaxis = list(
+          title = "Type of Node"
+        ),
+        yaxis = list(
+          title = "Operating Revenue",
+          zeroline = F
+        )
+      )
+  })
+  
+  output$violinPlot <- renderPlotly({
+    mc3_nodes_violin()
+  })
   
   #--------------------------------- Node Distribution Code ------------------------------------# PY
   
@@ -550,79 +660,158 @@ server <- function(input, output) {
   output$eigenPlot <- renderPlot({
     eigen_ggraph()
   })
- 
+  
   #--------------------------------- Text Analysis Code ------------------------------------# RT
   
-  #--------------------------------- Unigram Analysis - wordcloud --------------------------# RT
+  #--------------------------------- Unigram Analysis - data prep --------------------------# RT
   
   
   wrdcloud <- reactive({
     token_nodes <- mc3_nodes %>%
       unnest_tokens(word, 
                     product_services)
-  
-  new_stop_words <- stop_words %>% 
-    add_row(word=NA,lexicon="SMART") %>% 
-    add_row(word="products",lexicon="SMART") %>% 
-    add_row(word="services",lexicon="SMART") %>% 
-    add_row(word="related",lexicon="SMART") %>% 
-    add_row(word="unknown",lexicon="SMART") %>% 
-    add_row(word="character",lexicon="SMART") %>% 
-    add_row(word="including",lexicon="SMART")
-  
-  token_nodes %>% 
-    anti_join(new_stop_words) 
-  
+    
+    new_stop_words <- stop_words %>% 
+      add_row(word=NA,lexicon="SMART") %>% 
+      add_row(word="products",lexicon="SMART") %>% 
+      add_row(word="services",lexicon="SMART") %>% 
+      add_row(word="related",lexicon="SMART") %>% 
+      add_row(word="unknown",lexicon="SMART") %>% 
+      add_row(word="character",lexicon="SMART") %>% 
+      add_row(word="0",lexicon="SMART") %>% 
+      add_row(word="including",lexicon="SMART")
+    
+    token_nodes %>% 
+      anti_join(new_stop_words) 
+    
   })
   
-  create_wordcloud <- function(data, num_words = 100, background = "white") {
+  #------------------------------- Unigram Analysis - topic modelling ------------------------# RT
+  
+  topicmodelling <- function(data) {
     
     # If text is provided, convert it to a dataframe of word frequencies
     if (is.character(data$word)) {
-      corpus <- Corpus(VectorSource(data$word))
-      corpus <- tm_map(corpus, tolower)
-      corpus <- tm_map(corpus, removePunctuation)
-      corpus <- tm_map(corpus, removeNumbers)
-      corpus <- tm_map(corpus, removeWords, stopwords(tolower("English")))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove1))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove2))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove3))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove4))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove5))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove6))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove7))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove8))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove9))
-      corpus <- tm_map(corpus, removeWords, c(input$words_to_remove10))
-      tdm <- as.matrix(TermDocumentMatrix(corpus))
-      data <- sort(rowSums(tdm), decreasing = TRUE)
-      data <- data.frame(word = names(data), freq = as.numeric(data))
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove1) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove2) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove3) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove4) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove5) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove6) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove7) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove8) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove9) 
+      data <- data %>% 
+        filter(! word %in% input$words_to_remove10) 
+      data <- data %>%
+        count(id, word) %>% 
+        cast_dtm(id, word, n) %>% 
+        as.matrix()
     }
-    
-    # Make sure a proper num_words is provided
-    if (!is.numeric(num_words) || num_words < 3) {
-      num_words <- 3
-    }
-    
-    # Grab the top n most common words
-    data <- head(data, n = num_words)
-    if (nrow(data) == 0) {
-      return(NULL)
-    }
-    
-    set.seed(1234)
-    wordcloud2(data, backgroundColor = background)
+    return(data)
   }
   
-  output$cloud <- renderWordcloud2({
-    create_wordcloud(wrdcloud(),
-                     num_words = input$num,
-                     background = input$col
-    )
+  doctm <- reactive({
+    
+    doc.term.matrix <- topicmodelling(wrdcloud())
+    
+    result <- FindTopicsNumber(
+      doc.term.matrix,
+      topics = seq(from = 2, to = 20, by = 1),
+      metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
+      method = input$ldamethod,
+      control = list(seed = 77),
+      mc.cores = 2L,
+      verbose = TRUE)
+    
+    FindTopicsNumber_plot(result)
+    
   })
-
-  #--------------------------------- Bigram Analysis - wordcloud --------------------------# RT
   
+  
+  output$tm_optimizer <- renderPlot({
+    doctm()
+  })
+  
+  #------------------------------- Unigram Analysis - topics ------------------------# RT
+  
+  topics <- reactive({
+    
+    doc.term.matrix <- topicmodelling(wrdcloud())
+    
+    lda_topics <- LDA(
+      doc.term.matrix,
+      k = input$num.topics,
+      method = input$ldamethod,
+      control = list(seed=42)
+    ) %>%
+      tidy(matrix = "beta")
+    
+    lda_topics %>%
+      group_by(topic) %>%
+      top_n(15, beta) %>%
+      ungroup() %>%
+      mutate(term2 = fct_reorder(term, beta))
+    
+  })
+  
+  output$topic_prob <- renderPlot(
+    
+    ggplot(
+      topics(),
+      aes(term2, beta, fill=as.factor(topic))
+    ) +
+      geom_col(show.legend = FALSE) +
+      facet_wrap(~ topic, scales = "free") +
+      coord_flip()
+  )
+  
+  
+  
+  #------------------------------- Unigram Analysis - wordcloud ------------------------# RT
+  
+  topic_cloud <- reactive({
+    
+    doc.term.matrix <- topicmodelling(wrdcloud())
+    
+    lda_topics <- LDA(
+      doc.term.matrix,
+      k = input$num.topics,
+      method = input$ldamethod,
+      control = list(seed=42)) %>%
+      tidy(matrix = "beta")
+    
+    lda_topics %>%
+      group_by(topic) %>%
+      top_n(input$num, beta) %>%
+      ungroup() 
+    
+  })
+  
+  output$cloud2 <- renderPlot(
+    
+    topic_cloud() %>%
+      ggplot(aes(label = term, size = beta, color = topic, alpha = 1)) +
+      geom_text_wordcloud(seed = 123) +
+      facet_wrap(~topic, scales = "free") +
+      theme_minimal() +
+      theme(strip.background = element_rect(fill = "firebrick"),
+            strip.text.x = element_text(colour = "white"))
+    
+  )
+  
+  
+  
+  #--------------------------------- Bigram Analysis - datatable --------------------------# RT
   
   bigram <- reactive({
     token_nodes2 <- mc3_nodes %>%
@@ -695,7 +884,7 @@ server <- function(input, output) {
         filter(! word2 %in% input$words_to_remove_bi_10)
       
     }
-
+    
     data <- data %>%
       count(word1, word2, sort = TRUE) %>%
       # We rename the weight column so that the 
@@ -704,7 +893,6 @@ server <- function(input, output) {
     
     return(data)
   }
-  
   
   output$filtered_tbl = renderDT(create_datatable(bigram()))
   
@@ -715,7 +903,8 @@ server <- function(input, output) {
     bi.gram.count <- create_datatable(bigram())
     
     bi.gram.count <- bi.gram.count %>% 
-      filter(weight > input$threshold) %>%
+      filter(`weight` >= input$threshold[1]) %>%
+      filter(`weight`<= input$threshold[2]) %>% 
       graph_from_data_frame(directed = FALSE)
     
     V(bi.gram.count)$cluster <- clusters(graph = bi.gram.count)$membership
@@ -726,6 +915,8 @@ server <- function(input, output) {
     )
     
     V(cc.bi.gram.count)$degree <- strength(graph = cc.bi.gram.count)
+    V(cc.bi.gram.count)$closeness <- closeness(graph = cc.bi.gram.count)
+    V(cc.bi.gram.count)$betweenness <- betweenness(graph = cc.bi.gram.count)
     E(cc.bi.gram.count)$width <- E(cc.bi.gram.count)$weight/max(E(cc.bi.gram.count)$weight)
     
     if (input$bigramcluster == "Louvain") {
@@ -742,7 +933,9 @@ server <- function(input, output) {
     
     network.D3 <- igraph_to_networkD3(g = cc.bi.gram.count)
     network.D3$nodes <- network.D3$nodes %>%
-      mutate(Degree = (1E-2)*V(cc.bi.gram.count)$degree) %>%   
+      mutate(Degree = V(cc.bi.gram.count)$degree) %>% 
+      mutate(Betweenness = (V(cc.bi.gram.count)$betweenness/100)) %>% 
+      mutate(Closeness = (V(cc.bi.gram.count)$closeness*1000000)) %>% 
       mutate(Group = 1)
     
     network.D3$links$Width <- 8*E(cc.bi.gram.count)$width
@@ -758,9 +951,9 @@ server <- function(input, output) {
       Target = 'target',
       NodeID = 'name',
       Group = 'Group',
-      opacity = 0.9,
+      opacity = input$opacity,
       Value = 'Width',
-      Nodesize = 'Degree',
+      Nodesize = input$centralityindication,
       linkWidth = JS("function(d) { return Math.sqrt(d.value); }"),
       fontSize = 12,
       zoom = TRUE,
@@ -771,10 +964,42 @@ server <- function(input, output) {
   
   output$net <- renderForceNetwork(bigramcommunity())
   
-}
   
-   
+  centrality <- reactive({
+    
+    bi.gram.count <- create_datatable(bigram())
+    
+    bi.gram.count <- bi.gram.count %>% 
+      filter(`weight` >= input$threshold[1]) %>%
+      filter(`weight`<= input$threshold[2]) %>%
+      graph_from_data_frame(directed = FALSE)
+    
+    V(bi.gram.count)$cluster <- clusters(graph = bi.gram.count)$membership
+    
+    cc.bi.gram.count <- induced_subgraph(
+      graph = bi.gram.count,
+      vids = which(V(bi.gram.count)$cluster == which.max(clusters(graph = bi.gram.count)$csize))
+    )
+    
+    nodecentrality <- tibble(
+      word = V(cc.bi.gram.count)$name,  
+      degree = strength(graph = cc.bi.gram.count),
+      closeness = closeness(graph = cc.bi.gram.count), 
+      betweenness = betweenness(graph = cc.bi.gram.count)
+    )
+    
+    nodecentrality
+    
+  })
+  
+  output$centrality_tbl = renderDT(centrality())
+  
+  
+}
+
+
 
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
