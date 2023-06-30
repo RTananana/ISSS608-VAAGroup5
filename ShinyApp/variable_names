@@ -2,6 +2,8 @@ variable_cty - PY
 var_centrality - PY
 centralityPlot - PY
 ConnectionPlot - PY
+IndvComPlot - PY
+slideCount - PY
 
 wrdcloud - RT
 remove_words -RT

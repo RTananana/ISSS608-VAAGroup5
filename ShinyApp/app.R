@@ -84,6 +84,18 @@ oh_graph<-oh_graph %>%
          pagerank_centrality = centrality_pagerank(),
          authority_centrality = centrality_authority())
 
+#-------------------------- Individual's companies count--------------------#
+
+#Filter individual owners from edge table, and assign target to be source and vice versa
+mc3_edges_indi <- mc3_edges %>%
+  select (target, source, type, weights) %>%
+  group_by(target) %>%
+  filter(type == "Beneficial Owner") %>%
+  rename (src = target) %>%
+  rename (tgt = source) %>%
+  distinct() %>%
+  ungroup()
+
 
 # Shiny App UI--------------------------------------------------------------------------------------------------- 
 
@@ -168,6 +180,23 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                      
                                      mainPanel(
                                        visNetworkOutput("ConnectionPlot")
+                                     )
+                            ),
+                            
+                            #--------------------------------Tab 3 ------------------------------------                 
+                            tabPanel("Company Count",
+                                     titlePanel("Individual's Company Count"),
+                                     
+                                     sidebarLayout(
+                                       sidebarPanel(width = 3,
+                                                    sliderInput("slideCount", "Companies' Count:", 
+                                                                min = 3, 
+                                                                max = 10, 
+                                                                value = 5, 
+                                                                width = '100%')),
+                                       mainPanel(
+                                         visNetworkOutput("IndvComPlot")
+                                       )
                                      )
                             )
                             
@@ -521,6 +550,46 @@ server <- function(input, output) {
   
   output$ConnectionPlot <- renderVisNetwork({
     network_ggraph()
+  })  
+  
+  #--------------------------------- Individual Company Count Graph Code ------------------------------------# PY
+  
+  indicom_ggraph <- reactive({
+    
+    mc3_edges_indi_filtered <- mc3_edges_indi %>%
+      group_by(src) %>%
+      filter(n() >= input$slideCount) %>%
+      ungroup()
+    
+    #Create node
+    id1_inv <- mc3_edges_indi_filtered %>%
+      select(src) %>%
+      rename(id = src)
+    id2_inv <- mc3_edges_indi_filtered %>%
+      select(tgt) %>%
+      rename(id = tgt)
+    mc3_nodes_indi_filtered <- rbind(id1_inv, id2_inv) %>%
+      distinct()
+    
+    #prep format for plotting
+    mc3_edges_indi_filtered <- mc3_edges_indi_filtered %>%
+      rename(from = src) %>%
+      rename(to = tgt) %>%
+      filter(from!=to) %>%
+      ungroup()
+    
+    visNetwork(mc3_nodes_indi_filtered, mc3_edges_indi_filtered) %>%
+      visNodes(color = list(background = "blue", border = "red")) %>%
+      visEdges(arrows = "to") %>%
+      visIgraphLayout(layout = "layout_with_gem") %>%
+      visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE) %>%
+      visLegend() %>%
+      visLayout(randomSeed = 123)
+    
+  })
+  
+  output$IndvComPlot <- renderVisNetwork({
+    indicom_ggraph()
   })  
   
   #--------------------------------- Text Analysis Code ------------------------------------# RT
