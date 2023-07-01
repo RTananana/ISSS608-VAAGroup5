@@ -382,7 +382,7 @@ server <- function(input, output) {
   #--------------------------------- data search ------------------------------------# RT
   
   output$data_tbl = renderDT(
-    mc3_nodes, options = list(pageLength = 20)
+    mc3_nodes, options = list(pageLength = 10)
     )
   
   #--------------------------------- Violin Plot ------------------------------------# RT
