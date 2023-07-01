@@ -106,6 +106,18 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                  
                  #------------------------------------ Application 1 ---------------------------------------------# RT
                  # Application title
+                 tabPanel("Data Table Search",
+                          mainPanel(
+                            fluidRow(
+                              column(width=12,
+                                     fluidRow(withSpinner(DTOutput("data_tbl",width = "100%", height = "800px"), type = 3))
+                                     )
+                              )
+                            )
+                          ),
+                 
+                 #------------------------------------ Application 2 ---------------------------------------------# RT
+                 # Application title
                  tabPanel("EDA",
                           # Sidebar with a select input for country
                           sidebarLayout(
@@ -144,7 +156,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                           )
                  ),
                  
-                 #------------------------------------ Application 2 ---------------------------------------------# PY
+                 #------------------------------------ Application 3 ---------------------------------------------# PY
                  # Application title
                  navbarMenu("Network Graph",
                             
@@ -199,7 +211,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                             )
                  ),
                  
-                 #------------------------------------ Application 3 ---------------------------------------------# RT
+                 #------------------------------------ Application 4 ---------------------------------------------# RT
                  navbarMenu("Text Analysis",
                             
                             #--------------------------------Tab 1 ------------------------------------   
@@ -366,6 +378,12 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
 #---------------------------------------------------------------------------------------------------------------#
 
 server <- function(input, output) {
+  
+  #--------------------------------- data search ------------------------------------# RT
+  
+  output$data_tbl = renderDT(
+    mc3_nodes, options = list(pageLength = 20)
+    )
   
   #--------------------------------- Violin Plot ------------------------------------# RT
   
