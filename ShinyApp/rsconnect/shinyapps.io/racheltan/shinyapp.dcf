@@ -1,0 +1,11 @@
+name: shinyapp
+title:
+username:
+account: racheltan
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9393400
+bundleId: 7409205
+url: https://racheltan.shinyapps.io/shinyapp/
+when: 1688212052.39386
+lastSyncTime: 1688212052.39388

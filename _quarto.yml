@@ -4,9 +4,14 @@ project:
 website:
   title: "ISSS608-VAAGroup5"
   navbar:
-    left:
+    right:
       - href: proposal.qmd
         text: "Project Proposal"
+      - href: https://group5vaaapr23.shinyapps.io/shinyapp/
+        text: "RShiny App"
+      - href: Group5_Userguide.pdf
+        text: "User Guide"
+      
 
 format:
   html:

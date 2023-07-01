@@ -34,7 +34,7 @@ The dataset given is an undirected multi-graph.
 ## 3.1 Nodes Attributes
 
 | Column Name      | Data Type | Description                                                                                  |
-|-----------------|-----------------|---------------------------------------|
+|------------------|------------------|-------------------------------------|
 | type             | character | Type of node that is a company or person.                                                    |
 | country          | character | Country associated with the entity. This can be a full country or a two-letter country code. |
 | product_services | character | Description of product services that the "id" node does.                                     |
@@ -45,7 +45,7 @@ The dataset given is an undirected multi-graph.
 ## 3.2 Edges Attributes
 
 | Column Name | Data Type | Description                                                                  |
-|-----------------|-----------------|---------------------------------------|
+|------------------|------------------|-------------------------------------|
 | type        | character | Type of edge that is a person.                                               |
 | source      | character | ID of the source node.                                                       |
 | target      | character | ID of the target node.                                                       |
@@ -56,7 +56,7 @@ The dataset given is an undirected multi-graph.
 ## 4.1 Packages to be used
 
 | Package      | Usage                                                                                                                                                                   |
-|-------------------|-----------------------------------------------------|
+|--------------------|----------------------------------------------------|
 | jsonlite     | To import nodes and edges data from json format files                                                                                                                   |
 | tidygraph    | Allow users to manipulate and analyze network graphs using a tidy data framework.                                                                                       |
 | ggraph       | Provides various options for creating aesthetically pleasing and informative network visualizations                                                                     |
@@ -97,8 +97,6 @@ With EDA, we will be able to have a good overview of the various categories of d
 As our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.
 
 ![Barchart Example \[https://ggplot2.tidyverse.org\]](images/barchart%20example.png){fig-align="center" width="346"}
-
-![Heatmap Example \[Alboukadel Kassambara\]](images/heatmap%20example-01.png){fig-align="center" width="346"}
 
 As an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.
 

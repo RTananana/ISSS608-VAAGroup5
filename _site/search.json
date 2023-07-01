@@ -60,7 +60,7 @@
     "href": "proposal.html#uncovering-the-anomalies",
     "title": "Project Proposal",
     "section": "5.1 Uncovering the Anomalies",
-    "text": "5.1 Uncovering the Anomalies\nWith EDA, we will be able to have a good overview of the various categories of data, as well and spot any anomaly data through visualizations.\nAs our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.\n\n\n\nBarchart Example [https://ggplot2.tidyverse.org]\n\n\n\n\n\nHeatmap Example [Alboukadel Kassambara]\n\n\nAs an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.\n\n\n\nMosaic Plot Example [Jun 13, 2017 by Achim Zeileis]"
+    "text": "5.1 Uncovering the Anomalies\nWith EDA, we will be able to have a good overview of the various categories of data, as well and spot any anomaly data through visualizations.\nAs our dataset is mainly categorical data, our initial data visualizations will be mainly using barcharts and heatmaps.\n\n\n\nBarchart Example [https://ggplot2.tidyverse.org]\n\n\nAs an additional analysis, we may use mosaic plots to visualize relationships between multiple categorical variables, which can help reveal associations ro dependencies among the variables and help spot unusal patterns or outliers.\n\n\n\nMosaic Plot Example [Jun 13, 2017 by Achim Zeileis]"
   },
   {
     "objectID": "proposal.html#grouping-commonalities-uncovering-patterns",
