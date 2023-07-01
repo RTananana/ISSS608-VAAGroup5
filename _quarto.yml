@@ -11,6 +11,8 @@ website:
         text: "RShiny App"
       - href: Group5_Userguide.pdf
         text: "User Guide"
+      - href: Group5_Poster.jpg
+        text: "Poster"
       
 
 format:
