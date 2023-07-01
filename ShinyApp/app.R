@@ -3,9 +3,10 @@ pacman:::p_load(jsonlite, tidygraph, ggraph, visNetwork, graphlayouts
                 , DT, igraph, scales, viridis, colorspace, stringr
                 , knitr, wordcloud, bslib, thematic, shiny, colourpicker
                 , devtools, wordcloud2, tm, quanteda, networkD3, topicmodels
-                , ldatuning, shinycssloaders, ggwordcloud)
+                , ldatuning, shinycssloaders, ggwordcloud, hrbrthemes, treemapify
+                , treemap, RColorBrewer)
 
-options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
+options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=1)
 
 # Code Chuck----------------------------------------------------------------------------------------------------
 #------ Read Data
@@ -105,61 +106,55 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                  
                  #------------------------------------ Application 1 ---------------------------------------------# RT
                  # Application title
-                 navbarMenu("EDA",
-                 tabPanel("Violin Plot",
-                          titlePanel("Violin Plot"),
-                          
-                          # Sidebar with a select input for country 
+                 tabPanel("EDA",
+                          # Sidebar with a select input for country
                           sidebarLayout(
-                            sidebarPanel(width =3,
+                            sidebarPanel(width =2,
+                                         h4("For Violin PLot and Pie Chart"),
                                          selectInput(inputId = "violin_country",
                                                      label = "Please select Country",
                                                      choices = c("All",unique(mc3_nodes$country))),
-                                         sliderInput("revenue_range", 
+                                         sliderInput("revenue_range",
                                                      "Revenue Range:",
                                                      min = 3652.227,
                                                      max = 310612303,
-                                                     value = c(3652.227,310612303))
+                                                     value = c(3652.227,310612303)),
+                                         h4("For Tree Map and Histogram"),
+                                         sliderInput(inputId = "top_n",
+                                                     label = "Select Number of Top Countries",
+                                                     min = 5,  max = 40,  value = 5, step = 5)
                             ),
-                            
-                            
                             # Show a plot of the generated distribution
                             mainPanel(
-                              fluidRow(withSpinner(plotlyOutput("violinPlot"), type = 3))
+                              fluidRow(
+                                column(width=6,
+                                       fluidRow(withSpinner(plotlyOutput("violinPlot"), type = 3),
+                                                style = "height:400px"),
+                                       fluidRow(withSpinner(plotlyOutput("TreeMap"), type = 3),
+                                                style = "height:400px")
+                                ),
+                                column(width=6,
+                                       fluidRow(withSpinner(plotlyOutput("barPlot"), type = 3),
+                                                style = "height:400px"),
+                                       fluidRow(withSpinner(plotlyOutput("hist"), type = 3),
+                                                style = "height:400px")
+                                )
+                              )
                             )
-                            
                           )
                  ),
                  
                  #------------------------------------ Application 2 ---------------------------------------------# PY
                  # Application title
-                 tabPanel("Nodes Distribution",
-                          titlePanel("Nodes Types Distribution"),
-                          
-                          # Sidebar with a select input for country 
-                          sidebarLayout(
-                            sidebarPanel(width =3,
-                                         selectInput(inputId = "variable_cty",
-                                                     label = "Please select Country",
-                                                     choices = c("All",unique(mc3_nodes$country)))
-                            ),
-                            
-                            # Show a plot of the generated distribution
-                            mainPanel(
-                              plotlyOutput("barPlot")
-                            )
-                          )
-                 )
-                 ),
-                 #------------------------------------ Application 3 ---------------------------------------------# PY
-                 # Application title
                  navbarMenu("Network Graph",
+                            
+                            #--------------------------------Tab 1 ------------------------------------
                             tabPanel("Centrality Graph",
                                      titlePanel("Centrality Graph"),
                                      
                                      # Sidebar with a slider input for number of bins
                                      sidebarLayout(
-                                       sidebarPanel(width = 3,
+                                       sidebarPanel(width = 2,
                                                     selectInput(inputId = "var_centrality",
                                                                 label = "Centrality Option",
                                                                 choices = c("Betweenness", "Closeness",
@@ -169,7 +164,10 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                        
                                        # Show a plot of the generated distribution
                                        mainPanel(
-                                         plotOutput("centralityPlot")
+                                         column(width = 12,
+                                                height = 12,
+                                                fluidRow(withSpinner(plotOutput("centralityPlot", width = "100%"), type = 3))
+                                         )
                                        )
                                      )
                             ),
@@ -177,32 +175,31 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                             #--------------------------------Tab 2 ------------------------------------                 
                             tabPanel("Network Connection",
                                      titlePanel("Network Connection"),
-                                     
-                                     mainPanel(
-                                       visNetworkOutput("ConnectionPlot")
+                                     mainPanel(width = 12,
+                                               height = 12,
+                                               fluidRow(withSpinner(visNetworkOutput("ConnectionPlot", width = "100%", height = "800px"), type = 3))
                                      )
                             ),
                             
                             #--------------------------------Tab 3 ------------------------------------                 
                             tabPanel("Company Count",
                                      titlePanel("Individual's Company Count"),
-                                     
                                      sidebarLayout(
-                                       sidebarPanel(width = 3,
+                                       sidebarPanel(width = 2,
                                                     sliderInput("slideCount", "Companies' Count:", 
                                                                 min = 3, 
                                                                 max = 10, 
                                                                 value = 5, 
                                                                 width = '100%')),
-                                       mainPanel(
-                                         visNetworkOutput("IndvComPlot")
+                                       mainPanel(width = 10,
+                                                 height = 10,
+                                                 fluidRow(withSpinner(visNetworkOutput("IndvComPlot", width = "100%", height = "800px"), type = 3))
                                        )
                                      )
                             )
-                            
                  ),
                  
-                 #------------------------------------ Application 4 ---------------------------------------------# RT
+                 #------------------------------------ Application 3 ---------------------------------------------# RT
                  navbarMenu("Text Analysis",
                             
                             #--------------------------------Tab 1 ------------------------------------   
@@ -254,7 +251,7 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                                     ),
                                                     sliderInput("num.topics",
                                                                 "Number of Topics:",
-                                                                min = 2,  max = 20,  value = 5, step = 1
+                                                                min = 2,  max = 15,  value = 5, step = 1
                                                     ),
                                                     selectInput(inputId = "ldamethod",
                                                                 label = "LDA Methods",
@@ -267,13 +264,12 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                        ),
                                        mainPanel(
                                          fluidRow(
-                                           column(width=6,
+                                           column(width=4,
                                                   fluidRow(withSpinner(plotOutput("tm_optimizer"), type = 3), 
                                                            style = "height:200px")
                                            ),
-                                           column(width = 6,
-                                                  fluidRow(withSpinner(plotOutput("cloud2"), type = 3), 
-                                                           style = "height:800px")
+                                           column(width=8,
+                                                  fluidRow(withSpinner(plotOutput("cloud2",width = "100%", height = "800px"), type = 3))
                                            )
                                          )
                                        )
@@ -285,7 +281,6 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                      titlePanel("Text Analysis with tidytext for Product Services"),
                                      sidebarLayout(
                                        sidebarPanel(width = 2,
-                                                    h5("Step 1: Removal of Stopwords"),
                                                     # Allow Customized stop words inclusion
                                                     checkboxInput("remove_words_bi", "Remove specific words?", FALSE
                                                     ),
@@ -353,14 +348,11 @@ ui <- navbarPage("Illegal Fishing Network Analysis",
                                        mainPanel(
                                          fluidRow(
                                            column(width=8,
-                                                  fluidRow(withSpinner(forceNetworkOutput(outputId = "net"), type = 3), 
-                                                           style = "height:400px")
+                                                  fluidRow(withSpinner(forceNetworkOutput(outputId = "net",width = "100%", height = "800px"), type = 3))
                                            ),
                                            column(width = 4,
-                                                  fluidRow(withSpinner(DTOutput("filtered_tbl"), type = 3), 
-                                                           style = "height:200px"),
-                                                  fluidRow(withSpinner(DTOutput("centrality_tbl"), type = 3), 
-                                                           style = "height:200px")
+                                                  fluidRow(withSpinner(DTOutput("filtered_tbl",width = "100%", height = "400px"), type = 3)),
+                                                  fluidRow(withSpinner(DTOutput("centrality_tbl",width = "100%", height = "400px"), type = 3))
                                            )
                                          )
                                        )
@@ -396,12 +388,17 @@ server <- function(input, output) {
         filter(`revenue_omu` <= input$revenue_range[2])
     }
     
+    
     violin_plot <- violin %>%
-      plot_ly(x = ~Type, y = ~revenue_omu, split = ~Type,
-              type = 'violin',
+      plot_ly(x = ~Type, y = ~revenue_omu, split = ~Type, 
+              type = 'violin', text=~id,
               box = list(visible = T),
-              meanline = list(visible = T))  %>%
+              meanline = list(visible = T),
+              color=~Type,
+              colors = c("darkorange", "steelblue"))  %>%
       layout(title="Violin Plot of Operating Revenue by Type")
+    
+    
     
     violin_plot %>%
       layout(
@@ -412,7 +409,7 @@ server <- function(input, output) {
           title = "Operating Revenue",
           zeroline = F
         )
-      )
+      ) 
   })
   
   output$violinPlot <- renderPlotly({
@@ -422,8 +419,8 @@ server <- function(input, output) {
   #--------------------------------- Node Distribution Code ------------------------------------# PY
   
   node_bar_df <- reactive({
-    if (input$variable_cty != 'All') {
-      input_country <- input$variable_cty
+    if (input$violin_country != 'All') {
+      input_country <- input$violin_country
       df_type <- mc3_nodes %>%
         filter(country == input_country) 
     } else{
@@ -454,6 +451,106 @@ server <- function(input, output) {
   output$barPlot <- renderPlotly({
     node_bar_df()
   })
+  
+  #-------------------------------------- Tree Map Code ---------------------------------------# Abhi
+  
+  
+  
+  treemap_prep <- reactive({
+    
+    top_countries <- mc3_nodes %>%
+      group_by(country) %>%
+      summarise(total_revenue = sum(revenue_omu, na.rm = TRUE), .groups = "drop") %>%
+      arrange(desc(total_revenue)) %>% 
+      head(input$top_n) %>% 
+      pull(country)
+    
+    
+    if (input$violin_country != 'All') {
+      input_violin_country <- input$violin_country
+      treemap <- mc3_nodes %>%
+        filter(country == input_violin_country)  %>%
+        filter(Type=="Company Contacts") %>% 
+        group_by(country,id) %>%
+        summarise(company_revenue = sum(revenue_omu, na.rm = TRUE), .groups = "drop") %>%
+        arrange(country, desc(company_revenue)) %>%
+        group_by(country) %>%
+        slice_max(order_by = company_revenue, n = input$top_n)
+    } else{
+      treemap <- mc3_nodes %>%
+        filter(country == top_countries) %>%
+        filter(Type=="Company Contacts") %>% 
+        group_by(country,id) %>%
+        summarise(company_revenue = sum(revenue_omu, na.rm = TRUE), .groups = "drop") %>%
+        arrange(country, desc(company_revenue)) 
+    }
+    
+    
+    treemap$test<-"world"
+    
+    plot_ly(
+      data = treemap,
+      type="treemap",
+      values=~company_revenue,
+      labels=~country,
+      ids=~id,
+      parents=~test,
+      domain=list(column=0),
+      textinfo="label+ids",
+      marker = list(
+        colors = setNames(viridisLite::viridis(length(unique(treemap$country))),
+                          unique(treemap$country))),
+      hovertemplate = "<b>%{label} </b> <br>%{id} <br> Revenue: %{value}<extra></extra>") %>%
+      layout(title="Top Companies by Revenue in Selected Country", font = t,
+             annotations =
+               list(x = 0, y = -0.1,
+                    title = "",
+                    text = " ",
+                    showarrow = F,
+                    xref='paper',
+                    yref='paper'))
+    
+  })
+  
+  
+  output$TreeMap <- renderPlotly({
+    treemap_prep()
+  })
+  
+  
+  
+  
+  
+  #--------------------------------- Country vs Type Hist ------------------------------------# Abhi
+  
+  histo_prep <- reactive({
+    
+    country_count <- mc3_nodes %>%
+      count(country, Type) %>%
+      group_by(country) %>%
+      mutate(total = sum(n)) %>%
+      ungroup()
+    
+    top_n_countries <- country_count %>%
+      arrange(desc(total)) %>%
+      mutate(rank = dense_rank(-total)) %>%
+      filter(rank <= input$top_n)
+    
+    ggplot(top_n_countries, aes(x = reorder(country, -total), y = n, fill = Type)) +
+      geom_col(show.legend = FALSE) +
+      scale_fill_brewer(palette = "Paired") +
+      theme(axis.text.x = element_text(angle = 90)) +
+      labs(x = "Country", y = "Count", title = paste("Top", input$top_n, "Countries by Type"))
+    
+  })
+  
+  
+  
+  output$hist <- renderPlotly({
+    ggplotly(histo_prep())
+  })
+  
+  
   #--------------------------------- Centrality Graph Code ------------------------------------# PY
   
   centrality_ggraph <- reactive({
@@ -464,8 +561,11 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=betweenness_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=betweenness_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
-        theme_graph()
+        theme_graph() 
     } else if (input$var_centrality == "Closeness") {
       oh_graph %>%
         ggraph(layout = "fr") +
@@ -473,6 +573,9 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=closeness_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=closeness_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
         theme_graph()
     } else if (input$var_centrality == "Eigenvector") {
@@ -482,6 +585,9 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=eigen_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=eigen_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
         theme_graph()
     } else if (input$var_centrality == "Degree") {
@@ -491,6 +597,9 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=degree_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=degree_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
         theme_graph()
     } else if (input$var_centrality == "PageRank") {
@@ -500,6 +609,9 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=pagerank_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=pagerank_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
         theme_graph()
     } else {
@@ -509,6 +621,9 @@ server <- function(input, output) {
         geom_node_point(aes(colour=type,
                             alpha=0.5,
                             size=authority_centrality)) +
+        geom_node_label(aes(label = name,
+                            size=authority_centrality),
+                        repel = TRUE, show.legend = FALSE) +
         scale_size_continuous(range=c(1,10))+
         theme_graph()
     }
@@ -518,18 +633,18 @@ server <- function(input, output) {
   
   output$centralityPlot <- renderPlot({
     centrality_ggraph()
-  })
+  }, height = 800, width = 1000)
   
   #--------------------------------- Network Graph Code ------------------------------------# PY
   
   network_ggraph <- reactive({
     edges_df<-oh_graph%>%
       activate(edges) %>% 
-      as.tibble() 
+      as_tibble() 
     
     nodes_df<-oh_graph%>%
       activate(nodes) %>% 
-      as.tibble() %>%
+      as_tibble() %>%
       rename(label=name) %>%
       rename(group=type) %>% 
       mutate(id=row_number()) 
@@ -657,7 +772,7 @@ server <- function(input, output) {
     
     result <- FindTopicsNumber(
       doc.term.matrix,
-      topics = seq(from = 2, to = 20, by = 1),
+      topics = seq(from = 2, to = 15, by = 1),
       metrics = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
       method = input$ldamethod,
       control = list(seed = 77),
@@ -703,8 +818,9 @@ server <- function(input, output) {
     ) +
       geom_col(show.legend = FALSE) +
       facet_wrap(~ topic, scales = "free") +
-      coord_flip()
-  )
+      coord_flip() +
+      geom_text_wordcloud_area() +
+      scale_size_area(max_size = 40) )
   
   
   
@@ -731,7 +847,7 @@ server <- function(input, output) {
   output$cloud2 <- renderPlot(
     
     topic_cloud() %>%
-      ggplot(aes(label = term, size = beta, color = topic, alpha = 1)) +
+      ggplot(aes(label = term, size = beta, color = topic)) +
       geom_text_wordcloud(seed = 123) +
       facet_wrap(~topic, scales = "free") +
       theme_minimal() +
@@ -825,7 +941,7 @@ server <- function(input, output) {
     return(data)
   }
   
-  output$filtered_tbl = renderDT(create_datatable(bigram()))
+  output$filtered_tbl = renderDT(create_datatable(bigram()),options = list(pageLength = 5))
   
   #--------------------------------- Bigram Analysis - Network Graph --------------------------# RT
   
@@ -923,7 +1039,7 @@ server <- function(input, output) {
     
   })
   
-  output$centrality_tbl = renderDT(centrality())
+  output$centrality_tbl = renderDT(centrality(),options = list(pageLength = 5))
   
   
 }
